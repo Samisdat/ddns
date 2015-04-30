@@ -1,0 +1,10 @@
+key "DDNS_UPDATE" {
+	algorithm hmac-md5;
+	secret "KEY";
+};
+
+zone "DDNS_UPDATE" {
+	type master;
+	file "/etc/bind/db.dynamic_dns";
+	allow-update { key "DDNS_UPDATE"; };
+};
