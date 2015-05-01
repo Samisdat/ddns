@@ -1,3 +1,21 @@
+#!/bin/bash
+#
+# 
+
+get_key(){
+	rm -f ./Kddns_update*
+	dnssec-keygen -a HMAC-MD5 -b 128 -r /dev/urandom -n USER DDNS_UPDATE
+
+	fetch key
+	KEY=$(cat Kddns_update*.private | grep Key | cut -d " " -f 2)
+
+	echo "key \"DDNS_UPDATE\" {
+		algorithm hmac-md5;
+		secret \"$KEY\";
+	};"
+
+}
+
 read_config(){
 	local  CONFIGFILE="$1"
 

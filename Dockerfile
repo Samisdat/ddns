@@ -26,8 +26,6 @@ RUN chmod 755 /ddns/start
 
 WORKDIR /ddns
 
-RUN ./start
-
 EXPOSE 53/udp
 EXPOSE 53
 
