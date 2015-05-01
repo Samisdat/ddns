@@ -21,8 +21,10 @@ RUN chmod o+rw /etc/bind/named.conf.local
 
 RUN mkdir /ddns
 
-ADD start /ddns/start	
-RUN chmod 755 /ddns/start
+ADD samisdat-ddns.sh /ddns/samisdat-ddns.sh	
+RUN chmod 755 /ddns/samisdat-ddns.sh
+
+add config /ddns/config
 
 WORKDIR /ddns
 

@@ -1,47 +1,43 @@
 #!/bin/bash
-echo "Reading config...." >&2
+#
+# 
 
+get_key(){
+	mkdir -p /ddns/key
+	cd /ddns/key
+	rm -f ./Kddns_update*
+	
+	dnssec-keygen -a HMAC-MD5 -b 128 -r /dev/urandom -n USER DDNS_UPDATE
+	KEY=$(cat Kddns_update*.private | grep Key | cut -d " " -f 2)
 
-CONFIGFILE="/Users/samisdat/docker/dockerfiles/ddns/docker-ddns/config/dev.pertz.eu"
+	cd /ddns/key
 
-#eval $(sed '/:/!d;/^ *#/d;s/:/ /;' < "$CONFIGFILE" | while read -r key val
-#do
-   #verify here
-   #...
-    str="$key='$val'"
-    echo "$str"
-done)
-echo =$NAMESERVER= =$DYNAMIC_DOMAIN=  #here are defined
-
-
-read_config(){
-
-	CONFIGFILE="/Users/samisdat/docker/dockerfiles/ddns/docker-ddns/config/dev.pertz.eu"
-
-	eval $(sed '/:/!d;/^ *#/d;s/:/ /;' < "$CONFIGFILE" | while read -r key val
-	do
-    	#verify here
-    	#...
-    	str="$key='$val'"
-	done)
-	echo $NAMESERVER 
-	echo $DYNAMIC_DOMAIN
+	echo "key \"DDNS_UPDATE\" {
+		algorithm hmac-md5;
+		secret \"$KEY\";
+	};"
 
 }
 
-read_config
-#read NAMESERVER DYNAMIC_DOMAIN < <(read_config)
-#echo $NAMESERVER
-#echo $DYNAMIC_DOMAIN
+read_config(){
+	local  CONFIGFILE="$1"
 
-#calc()
-#{
-#  A=$1
-#  B=$2
-#  total=$(( A + B ))
-#  diff=$(( A - B ))
-#  echo "$total $diff"
-#}
-#read TOT DIF < <(calc 5 8)
-#echo $TOT
-#echo $DIF
+	NAMESERVER=$(cat $CONFIGFILE | grep NAMESERVER | cut -d " " -f 2)
+	DYNAMIC_DOMAIN=$(cat $CONFIGFILE | grep DYNAMIC_DOMAIN | cut -d " " -f 2)
+	local my_list=("$NAMESERVER" "$DYNAMIC_DOMAIN")  
+	echo "${my_list[@]}" 
+}
+
+load_configs(){
+
+	for filename in /ddns/config/*; do
+    	#echo "$filename"
+    	read_config $filename
+		local result=( $(read_config $filename))
+
+		echo "${result[0]} ${result[1]}" 
+	done
+
+}
+
+get_key
