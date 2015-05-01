@@ -1,4 +1,4 @@
-$
+
 
 my_algorithm() {
   local result=( $(create_array) )
@@ -15,16 +15,19 @@ my_algorithm
 
 
 read_config(){
+  echo "read_config";
+  local my_list=("a" "b" "c")  
+  echo "${my_list[@]}" 
 
 }
 
 load_configs(){
 
-for filename in /Users/samisdat/docker/dockerfiles/ddns/docker-ddns/config/*; do
-    for ((i=0; i<=3; i++)); do
-        echo "$filename"
-    done
-done
+	for filename in /Users/samisdat/docker/dockerfiles/ddns/docker-ddns/config/*; do
+    	echo "$filename"
+		local result=( $(read_config) )
+		echo "${result[1]}" 
+	done
 
 }
 
