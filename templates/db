@@ -1,0 +1,11 @@
+$TDL	30
+@	IN	SOA	NAMESERVER. root.localhost. (
+			      3		; Serial
+			 604800		; Refresh
+			  86400		; Retry
+			2419200		; Expire
+			  86400 )	; Negative Cache TTL
+;
+@		IN	NS	NAMESERVER.
+@		IN	A	127.0.0.1
+*		IN	CNAME 	DYNAMIC_DOMAIN.	
