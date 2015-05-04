@@ -15,6 +15,7 @@ RUN chmod +x /ddns/samisdat-ddns.sh
 
 add config /ddns/config
 add templates /ddns/templates
+add client /ddns/client
 
 WORKDIR /ddns
 

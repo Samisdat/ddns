@@ -1,4 +1,4 @@
 key "DDNS_UPDATE" {
 	algorithm hmac-md5;
 	secret "DNSSEC_KEY";
-};"
+};
