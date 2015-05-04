@@ -10,14 +10,15 @@ RUN apt-get install -y vim
 
 RUN mkdir /ddns
 
-ADD samisdat-ddns.sh /ddns/samisdat-ddns.sh	
-RUN chmod +x /ddns/samisdat-ddns.sh
+ADD config /ddns/config
+ADD templates /ddns/templates
+ADD client /ddns/client
+ADD server /ddns/server
 
-add config /ddns/config
-add templates /ddns/templates
-add client /ddns/client
+RUN chmod +x /ddns/server/setup.sh
 
-WORKDIR /ddns
+
+WORKDIR /ddns/server
 
 EXPOSE 53/udp
 EXPOSE 53
