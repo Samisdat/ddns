@@ -10,13 +10,18 @@ RUN apt-get install -y vim
 
 RUN mkdir /ddns
 
+#mkdir client in productive
 ADD config /ddns/config
-ADD templates /ddns/templates
-ADD client /ddns/client
-ADD server /ddns/server
 
+ADD templates /ddns/templates
+
+ADD client /ddns/client
+
+ADD server /ddns/server
 RUN chmod +x /ddns/server/setup.sh
 
+ADD control /ddns/control
+RUN chmod +x /ddns/control/control.sh
 
 WORKDIR /ddns/server
 
