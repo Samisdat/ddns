@@ -49,30 +49,22 @@ fi
 
 while getopts :a:n:i:d:c:h FLAG; do
   case $FLAG in
-    a)  #set option "a"
+    a) 
       ACTION=$OPTARG
       ;;
-    n)  #set option "a"
+    n)  
       NAMESERVER=$OPTARG
-      echo "-a used: $OPTARG"
-      echo "OPT_A = $OPT_A"
       ;;
     i)
       DOCKER_ID=$OPTARG
-      echo "-id used: $OPTARG"
-      echo "OPT_C = $OPT_C"
       ;;
-    d)  #set option "b"
+    d)  
       DYNAMIC_DOMAIN=$OPTARG
-      echo "-b used: $OPTARG"
-      echo "OPT_B = $OPT_B"
       ;;
-    c)  #set option "c"
+    c)  
       CONFIG_FILE=$OPTARG
-      #echo "-c used: $OPTARG"
-      #echo "OPT_C = $OPT_C"
       ;;
-    h)  #show help
+    h)  
       DISPLAY_INFO
       exit 0;      
       ;;
@@ -123,6 +115,28 @@ if [ $ACTION == 'create_config' ]; then
 		echo "NAMESERVER: ${NAMESERVER}" >> $CONFIG_FILE 
 		echo "DYNAMIC_DOMAIN: ${DYNAMIC_DOMAIN}" >> $CONFIG_FILE
 fi
+
+if [ $ACTION == 'add_config' ]; then
+		if [ $CONFIG_FILE == 0 ]; then
+			echo "use -c to define a config file"
+			HELP
+			exit 1;
+		fi
+		if [ $DOCKER_ID == 0 ]; then
+			echo "use -i to define docker name or id"
+			HELP
+			exit 1;
+		fi
+
+		if [ ! -f $CONFIG_FILE ]; then
+			echo "${CONFIG_FILE} can not be found"
+		fi
+
+		DOCKER_CHECK=($(docker inspect ${DOCKER_ID} | grep Id))
+
+		
+fi
+
 
 ### End getopts code ###
 
