@@ -20,9 +20,6 @@ ADD client /ddns/client
 ADD server /ddns/server
 RUN chmod +x /ddns/server/setup.sh
 
-ADD control /ddns/control
-RUN chmod +x /ddns/control/control.sh
-
 WORKDIR /ddns/server
 
 EXPOSE 53/udp

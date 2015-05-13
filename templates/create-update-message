@@ -1,4 +1,3 @@
-#!/bin/bash
 #echo "server NAMESERVER"
 echo "server localhost"
 echo "zone DYNAMIC_DOMAIN"
