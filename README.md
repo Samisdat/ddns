@@ -1,7 +1,16 @@
 ## Build with all dependies
 
-/ddns
-	/ddns/create_zones.sh
+docker run -d --name ddns samisdat/ddns
 
-JSON
+docker exec -it ddns bash 
 
+./setup.sh -k -z -c
+exit
+
+docker cp CONTAINER:/ddns/client.tar HOSTPATH
+
+cd HOSTPATH
+
+tar xvf client.tar
+cd client
+./do-nsupdate.sh 
