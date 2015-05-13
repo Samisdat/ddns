@@ -18,11 +18,19 @@ ADD templates /ddns/templates
 ADD client /ddns/client
 
 ADD server /ddns/server
+RUN chmod +x /ddns/server/start.sh
 RUN chmod +x /ddns/server/setup.sh
 
 WORKDIR /ddns/server
 
+RUN cp /ddns/templates/logging /etc/bind/named.conf.logging
+RUN mkdir /var/log/named/
+RUN chown bind:bind /var/log/named/
+RUN echo 'include "/etc/bind/named.conf.logging";' >> /etc/bind/named.conf
+
 EXPOSE 53/udp
 EXPOSE 53
+
+CMD service bind9 restart && tail -F /var/log/named/bind.log
 
 
