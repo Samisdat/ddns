@@ -103,14 +103,16 @@ create_client(){
 
 	chmod +x /ddns/client/create-update-message.sh
 
-	tar cvf /ddns/client.tar /ddns/client/
+	cd /ddns/
+	tar cvf ./client.tar ./client/
+	cd /ddns/server
+
+	echo "client script created. copy from host by"
+	echo "docker cp CONTAINER:/ddns/client.tar HOSTPATH"
 
 }
 
-#config_bind
-#create_client
-
-SCRIPT=`basename ${BASH_SOURCE[0]}`
+SCRIPT=`basename ${BASH_SOURCE[0]}`	
 
 #make help little nicer
 #font-weight:normal
