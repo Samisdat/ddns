@@ -21,8 +21,11 @@ ADD templates /ddns/templates
 ADD client /ddns/client
 
 ADD server /ddns/server
-RUN chmod +x /ddns/server/start.sh
 RUN chmod +x /ddns/server/setup.sh
+
+ADD start.sh /ddns/server
+RUN chmod +x /ddns/start.sh
+
 
 WORKDIR /ddns/server
 
