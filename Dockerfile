@@ -18,12 +18,10 @@ VOLUME /ddns/config
 
 ADD templates /ddns/templates
 
-ADD client /ddns/client
-
 ADD server /ddns/server
 RUN chmod +x /ddns/server/setup.sh
 
-ADD start.sh /ddns/server
+ADD start.sh /ddns/start.sh
 RUN chmod +x /ddns/start.sh
 
 
