@@ -89,12 +89,76 @@ create_client(){
 	done
 }
 
-config_bind
-create_client
+#config_bind
+#create_client
 
+#make help little nicer
+#font-weight:normal
+NORMAL=`tput sgr0`
+#font-weight:bold
+BOLD=`tput bold`
 
+#Help function
+function HELP {
+cat << EOF
+Supported params
+-k  create update ${BOLD}k${NORMAL}ey
+-z  create ${BOLD}z${NORMAL}one(s) from config(s) and restart server  
+-c  create ${BOLD}c${NORMAL}lient and tar it
+-h  display this ${BOLD}h${NORMAL} help, again
 
+Usages: 
 
+${BOLD}./$SCRIPT -k${NORMAL} # create key. Caution: This will delete eventual existing key 
+${BOLD}./$SCRIPT -z${NORMAL} # read config(s) and create zones
+${BOLD}./$SCRIPT -c${NORMAL} # create client script and tar it  
+${BOLD}./$SCRIPT -k -z -c ${NORMAL} # 
+EOF
+exit 1
+}
 
+#show help if no argument
+NUMARGS=$#
+if [ $NUMARGS -eq 0 ]; then
+  HELP
+  exit 0;
+fi
 
+DO_CREATE_KEY=0
+DO_CREATE_ZONE=0
+DO_CREATE_CLIENT=0
+
+while getopts kzch FLAG; do
+  case $FLAG in
+    k) 
+      DO_CREATE_KEY=1
+      ;;
+    z)  
+      DO_CREATE_ZONE=1
+      ;;
+    c)
+      DO_CREATE_CLIENT=1
+      ;;
+    h)  
+      HELP
+      exit 0;      
+      ;;
+    \?) #unrecognized option - show help
+      echo -e \\n"Unsuppoted param -${BOLD}$OPTARG${NORM} "
+      HELP
+      exit 0;
+  esac
+done
+
+if [[ "$DO_CREATE_KEY" == 1  ]]; then
+    echo "create key"
+fi
+
+if [[ "$DO_CREATE_ZONE" == 1  ]]; then
+    echo "create zone"
+fi
+
+if [[ "$DO_CREATE_CLIENT" == 1  ]]; then
+    echo "create client"
+fi
 
