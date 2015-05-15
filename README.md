@@ -13,5 +13,7 @@ docker cp CONTAINER:/ddns/client.tar HOSTPATH
 cd HOSTPATH
 
 tar xvf client.tar
+
 cd client
+
 ./do-nsupdate.sh
