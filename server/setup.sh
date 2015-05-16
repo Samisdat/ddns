@@ -93,6 +93,8 @@ create_client(){
 
 	echo "#!/bin/bash" > /ddns/client/create-update-message.sh
 
+    echo "IP=( $(ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}') )"
+
 	for filename in /ddns/config/*; do
 		read_config $filename
 		local result=( $(read_config $filename))
@@ -186,4 +188,3 @@ if [[ "$DO_CREATE_CLIENT" == 1  ]]; then
     echo "create client"
     create_client
 fi
-
