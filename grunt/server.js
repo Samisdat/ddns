@@ -73,16 +73,19 @@ var server = function(grunt){
     var create_key = function(){
         var deferred = Q.defer();
 
-        execCmd('some cmd', 'somehelptext"', 750, true)
-        .then(function (response) {
+        execCmd('mkdir -p /ddns/key', 'create dir for key')
+        .then(function () {
+			return execCmd('rm -f /ddns/key/Kddns_update*', 'delete key if already exists')
 
-            var json = JSON.parse(response.stdout);
-            deferred.resolve(json[0]);
-
-        }).fail(function(){
-
-            deferred.reject();
-
+        })
+        .then(function () {
+			return execCmd('dnssec-keygen -K /ddns/key/ -a HMAC-MD5 -b 128 -r /dev/urandom -n USER DDNS_UPDATE', 'create key')
+        })
+        .then(function () {
+        	deferred.resolve();
+        })
+        .fail(function(){
+        	deferred.reject('key could not be created');	
         });
 
         return deferred.promise;
