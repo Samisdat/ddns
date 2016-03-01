@@ -11,6 +11,7 @@ var server = function(grunt){
     "use strict";
 
     var path_to_tpls = '/var/grobdns/tpls/';
+
     /**
      * Execute shell cmd via child_process
      */
@@ -76,11 +77,11 @@ var server = function(grunt){
 
         execCmd('mkdir -p /ddns/key', 'create dir for key')
         .then(function () {
-			return execCmd('rm -f /ddns/key/Kddns_update*', 'delete key if already exists')
+            return execCmd('rm -f /ddns/key/Kddns_update*', 'delete key if already exists')
 
         })
         .then(function () {
-			return execCmd('dnssec-keygen -K /ddns/key/ -a HMAC-MD5 -b 128 -r /dev/urandom -n USER DDNS_UPDATE', 'create key')
+            return execCmd('dnssec-keygen -K /ddns/key/ -a HMAC-MD5 -b 128 -r /dev/urandom -n USER DDNS_UPDATE', 'create key')
         })
         .then(function () {
         	deferred.resolve();
@@ -437,4 +438,4 @@ module.exports = function (grunt) {
 };
 
 
-
+	
