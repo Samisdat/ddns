@@ -10,6 +10,7 @@ var server = function(grunt){
 
     "use strict";
 
+    var path_to_tpls = '/var/grobdns/tpls/';
     /**
      * Execute shell cmd via child_process
      */
@@ -91,18 +92,33 @@ var server = function(grunt){
         return deferred.promise;
     };
 
-	var read_key = function(){
+    var add_key_to_config = function(){
         var deferred = Q.defer();
 
-        execCmd('some cmd', 'somehelptext"', 750, true)
+        execCmd('cat /ddns/key/Kddns_update*.private | grep Key | cut -d " " -f 2', 'read key')
         .then(function (response) {
 
-            var json = JSON.parse(response.stdout);
-            deferred.resolve(json[0]);
+            var key = response.stdout;
 
-        }).fail(function(){
+            if(undefined === key){
+                deferred.reject('could not read key')
+            }
+            
+            key = key.trim();
 
-            deferred.reject();
+            var keyTpl = fs.readFileSync(path_to_tpls + 'key',{encoding:'utf8'});
+
+            var keyPart = grunt.template.process(keyTpl, {data: {dnssec_key:key}});
+
+            return execCmd('echo "' + keyPart + '" >> /etc/bind/named.conf.local', 'add key to bind config');
+
+        })
+        .then(function () {
+            deferred.resolve();
+        })
+        .fail(function(){
+
+            deferred.reject('could not read key');
 
         });
 
@@ -278,7 +294,7 @@ var server = function(grunt){
 
     return{
     	create_key:create_key,
-		read_key: read_key,
+		add_key_to_config: add_key_to_config,
 		create_zone: create_zone,
 		read_config: read_config,
 		read_configs: read_configs,
@@ -313,11 +329,11 @@ module.exports = function (grunt) {
 
     });
 
-	grunt.registerTask('server:read_key', 'help', function(args) {
+	grunt.registerTask('server:add_key_to_config', 'help', function(args) {
 
         var done = this.async();
 
-        server(grunt).create_key()
+        server(grunt).add_key_to_config()
         .then(function(){
             done();
         })
