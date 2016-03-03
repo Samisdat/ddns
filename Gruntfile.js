@@ -13,15 +13,4 @@ module.exports = function(grunt) {
 
     require('load-grunt-config')(grunt);
 
-    grunt.initConfig({
-
-        'mocha_istanbul': {
-            coverage: {
-                src: 'test/**/*.js' // a folder works nicely
-            }
-        }
-    });
-
-
-    grunt.registerTask('coverage', ['mocha_istanbul:coverage']);
 };
