@@ -8,7 +8,8 @@ module.exports = function(grunt) {
     require('load-grunt-tasks')(grunt, {pattern: [
         'grunt-*', 
         '@*/grunt-*',
-        'gruntify-eslint*'
+        'gruntify-eslint*',
+        'istanbul'
     ]});
 
     require('load-grunt-config')(grunt);
