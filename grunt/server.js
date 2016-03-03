@@ -12,6 +12,8 @@ var server = function(grunt){
 
     var path_to_tpls = '/var/grobdns/tpls/';
 
+    var nameServer = 'ns.example.com';
+    var ddnsDomain = 'dev.example.com';
     /**
      * Execute shell cmd via child_process
      */
@@ -111,7 +113,7 @@ var server = function(grunt){
 
             var keyPart = grunt.template.process(keyTpl, {data: {dnssec_key:key}});
 
-            return execCmd('echo "' + keyPart + '" >> /etc/bind/named.conf.local', 'add key to bind config');
+            return execCmd('echo "' + keyPart + '" >> /etc/bind/named.conf.local', 'add key to /etc/bind/named.conf.local');
 
         })
         .then(function () {
@@ -129,11 +131,25 @@ var server = function(grunt){
 	var create_zone = function(){
         var deferred = Q.defer();
 
-        execCmd('some cmd', 'somehelptext"', 750, true)
+        var data = {
+            nameServer: nameServer,
+            ddnsDomain: ddnsDomain
+        };
+
+        var dbTpl = fs.readFileSync(path_to_tpls + 'db',{encoding:'utf8'});
+        var db = grunt.template.process(dbTpl, {data: data});
+
+        var zoneTpl = fs.readFileSync(path_to_tpls + 'zone',{encoding:'utf8'});
+        var zone = grunt.template.process(zoneTpl, {data: data});
+
+        fs.writeFileSync('/etc/bind/db.' + ddnsDomain, db);
+
+        fs.appendFile('/etc/bind/named.conf.local', zone);
+        
+        execCmd('chown bind:bind "/etc/bind/db.' + ddnsDomain + '"', 'somehelptext', 750, true)
         .then(function (response) {
 
-            var json = JSON.parse(response.stdout);
-            deferred.resolve(json[0]);
+            deferred.resolve();
 
         }).fail(function(){
 
@@ -349,7 +365,7 @@ module.exports = function (grunt) {
 
         var done = this.async();
 
-        server(grunt).create_key()
+        server(grunt).create_zone()
         .then(function(){
             done();
         })
