@@ -14,6 +14,7 @@ var server = function(grunt){
 
     var nameServer = 'ns.example.com';
     var ddnsDomain = 'dev.example.com';
+
     /**
      * Execute shell cmd via child_process
      */
@@ -160,50 +161,18 @@ var server = function(grunt){
         return deferred.promise;
     };
 	
-	var read_config = function(){
-        var deferred = Q.defer();
-
-        execCmd('some cmd', 'somehelptext"', 750, true)
-        .then(function (response) {
-
-            var json = JSON.parse(response.stdout);
-            deferred.resolve(json[0]);
-
-        }).fail(function(){
-
-            deferred.reject();
-
-        });
-
-        return deferred.promise;
-    };
-	
-	var read_configs = function(){
-        var deferred = Q.defer();
-
-        execCmd('some cmd', 'somehelptext"', 750, true)
-        .then(function (response) {
-
-            var json = JSON.parse(response.stdout);
-            deferred.resolve(json[0]);
-
-        }).fail(function(){
-
-            deferred.reject();
-
-        });
-
-        return deferred.promise;
-    };
-
 	var enable_logging = function(){
         var deferred = Q.defer();
 
-        execCmd('some cmd', 'somehelptext"', 750, true)
+        var logConfig = fs.readFileSync(path_to_tpls + 'logging',{encoding:'utf8'});
+        fs.appendFile('/etc/bind/named.conf.local', logConfig);
+
+        fs.mkdirSync('/var/log/named/');
+
+        execCmd('chown bind:bind /var/log/named/', 'somehelptext', 750, true)
         .then(function (response) {
 
-            var json = JSON.parse(response.stdout);
-            deferred.resolve(json[0]);
+            deferred.resolve();
 
         }).fail(function(){
 
@@ -313,8 +282,6 @@ var server = function(grunt){
     	create_key:create_key,
 		add_key_to_config: add_key_to_config,
 		create_zone: create_zone,
-		read_config: read_config,
-		read_configs: read_configs,
 		enable_logging: enable_logging,
 		config_bind: config_bind,
 		create_client: create_client,
@@ -376,41 +343,11 @@ module.exports = function (grunt) {
 
     });
 
-	grunt.registerTask('server:read_config', 'help', function(args) {
-
-        var done = this.async();
-
-        server(grunt).create_key()
-        .then(function(){
-            done();
-        })
-        .catch(function(){
-            grunt.log.error('something went wrong');
-            done(false);
-        });
-
-    });
-
-	grunt.registerTask('server:read_configs(', 'help', function(args) {
-
-        var done = this.async();
-
-        server(grunt).create_key()
-        .then(function(){
-            done();
-        })
-        .catch(function(){
-            grunt.log.error('something went wrong');
-            done(false);
-        });
-
-    });
-
 	grunt.registerTask('server:enable_logging', 'help', function(args) {
 
         var done = this.async();
 
-        server(grunt).create_key()
+        server(grunt).enable_logging()
         .then(function(){
             done();
         })
