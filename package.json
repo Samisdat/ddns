@@ -17,12 +17,17 @@
   "author": "samisdat",
   "license": "MIT",
   "devDependencies": {
+    "chai": "^3.5.0",
     "grunt": "^0.4.5",
     "grunt-bumpup": "^0.6.3",
-    "grunt-contrib-jshint": "^1.0.0",
     "grunt-exec": "^0.4.6",
+    "grunt-mocha-istanbul": "^3.0.1",
+    "grunt-mocha-test": "^0.12.7",
+    "gruntify-eslint": "^2.0.0",
+    "istanbul": "^0.4.2",
     "load-grunt-config": "^0.19.1",
     "load-grunt-tasks": "^3.4.1",
+    "mocha": "^2.4.5",
     "q": "^1.4.1",
     "time-grunt": "^1.3.0"
   }
