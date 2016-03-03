@@ -1,0 +1,5 @@
+zone "<%= ddnsDomain %>" {
+	type master;
+	file "/etc/bind/db.<%= ddnsDomain %>";
+	allow-update { key "DDNS_UPDATE"; };
+};
