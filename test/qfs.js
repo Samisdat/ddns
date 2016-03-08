@@ -32,7 +32,7 @@ describe('method qfs.fileExists', function() {
         expect(qfs.fileExists).to.exist
         expect(qfs.fileExists).to.be.instanceof(Function);
 
-        var promise = qfs.fileExists();
+        var promise = qfs.fileExists('/etc/hosts');
 
         expect(promise.then).to.be.instanceof(Function);
         expect(promise.fail).to.be.instanceof(Function);
