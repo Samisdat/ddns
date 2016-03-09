@@ -35,7 +35,34 @@ module.exports = function(fs){
         return deferred.promise;
     };
 
+    var unlink = function(path){
+        var deferred = q.defer();
+
+        if(true !== _.isString(path)){
+
+           deferred.reject();
+
+        }
+        else{
+
+            fs.unlink(path, function(error){
+                if(undefined !== error){
+                    deferred.reject();
+                    return;
+                }
+                    
+                deferred.resolve();        
+                
+            });
+        }
+
+        return deferred.promise;
+    };
+
+        
+
     return {
-        fileExists: fileExists
+        fileExists: fileExists,
+        unlink: unlink
     }
 };

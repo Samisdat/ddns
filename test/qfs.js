@@ -78,3 +78,58 @@ describe('method qfs.fileExists', function() {
     }); 
 
 });
+
+describe('method qfs.fileExists', function() { 
+
+    var qfs;
+
+    beforeEach(function() {
+        var vfs = createVirtualFileSystem();
+        qfs = require('../grunt/lib/qfs')(vfs);
+    });
+
+    it('succeeded an existing file', function(done) {
+
+        //var promise = qfs.fileExists('/etc/bind/named.conf.local');
+        var promise = qfs.unlink('/etc/bind/named.conf.local');
+        promise.then(function(){
+            done();
+        });    
+
+        promise.fail(function(){
+            done(new Error('File don\'t exist'));
+        })    
+
+    }); 
+
+    it('fails on not existing file', function(done) {
+
+        //var promise = qfs.fileExists('/etc/bind/named.conf.local');
+        var promise = qfs.unlink('/etc/bind/named.conf.loca');
+        promise.then(function(){
+            done(new Error('file exists'));
+        });    
+
+        promise.fail(function(){
+            done();
+        })    
+
+    }); 
+
+    it('fails when file name is not a string', function(done) {
+
+        //var promise = qfs.fileExists('/etc/bind/named.conf.local');
+        var promise = qfs.unlink();
+        promise.then(function(){
+            done(new Error('file don\'t exist'));
+        });    
+
+        promise.fail(function(){
+            done();
+        })    
+
+    }); 
+
+
+});
+
