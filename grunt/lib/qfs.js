@@ -61,10 +61,51 @@ module.exports = function(fs){
         return deferred.promise;
     };
 
+    var readFile = function(file){
 
+        var deferred = q.defer();
+
+        fs.readFile(
+            file,
+            {encoding: 'utf8'},
+            function(err, data){
+                if (err){
+                    deferred.reject(err);
+                    return;
+                }
+                deferred.resolve(data);
+            }
+        );
+
+        return deferred.promise;
+
+    };
+
+    var writeFile = function(file, data){
+
+        var deferred = q.defer();
+
+        fs.writeFile(
+            file,
+            data,
+            {encoding: 'utf8'},
+            function(err){
+                if (err){
+                    deferred.reject(err);
+                    return;
+                }
+                deferred.resolve();
+            }
+        );
+
+        return deferred.promise;
+
+    };
 
     return {
         fileExists: fileExists,
-        unlink: unlink
+        unlink: unlink,
+        readFile: readFile,
+        writeFile: writeFile
     };
 };
