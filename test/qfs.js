@@ -1,24 +1,29 @@
 var expect = require('chai').expect;
-var assert = require('chai').assert;
 
-var q = require('q');
-var qfs = require('../grunt/lib/qfs');
-
-var unionfs = require('unionfs');
-var fs = require('fs');
 var memfs = require('memfs');
 
-var mem = new memfs.Volume;
-mem.mountSync('/etc/bind/', {
-    "named.conf.local": "just a file"
-});
+var createVirtualFileSystem = function(){
+    
+    var mem = new memfs.Volume;
+    mem.mountSync('/etc/bind/', {
+        "named.conf.local": "just a file"
+    });
 
-unionfs.use(fs).use(mem);
-unionfs.replace(fs);
+    return mem;
+};
 
 describe('method qfs.fileExists', function() { 
 
+    var qfs;
+
+    beforeEach(function() {
+        var vfs = createVirtualFileSystem();
+        qfs = require('../grunt/lib/qfs')(vfs);
+    });
+
     it('method exists and returns a promise', function() {
+
+        qfs = require('../grunt/lib/qfs')();
 
         expect(qfs.fileExists).to.exist
         expect(qfs.fileExists).to.be.instanceof(Function);
@@ -49,7 +54,7 @@ describe('method qfs.fileExists', function() {
         //var promise = qfs.fileExists('/etc/bind/named.conf.local');
         var promise = qfs.fileExists('/etc/bind/named.conf.loca');
         promise.then(function(){
-            done(new Error('file don\'t exist'));
+            done(new Error('file exists'));
         });    
 
         promise.fail(function(){

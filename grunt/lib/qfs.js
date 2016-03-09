@@ -1,66 +1,41 @@
 var _ = require('lodash');
 var q = require('q');
-var fs = require('fs');
 
-/**
-fs.exists is deprecated but fs.stat is not usable with memfs
-var fileExists = function(fileName){
+module.exports = function(fs){
 
-    var deferred = q.defer();
-
-    if(true !== _.isString(fileName)){
-
-       deferred.reject();
-
-    }
-    else{
-
-        fs.stat(fileName, function(err, stats){
-
-            if(null !== err){
-                deferred.reject();
-                return;
-            }
-            
-            if(true !== stats.isFile()){
-                deferred.reject();
-                return;
-            }
-
-            deferred.resolve();    
-
-        });
-
+    if(undefined === fs){
+        fs = require('fs');
     }
 
-    return deferred.promise;
-};
- */
+    /**
+     *fs.exists is deprecated but fs.stat is not usable with memfs
+     */
+    var fileExists = function(fileName){
 
-var fileExists = function(fileName){
+        var deferred = q.defer();
 
-    var deferred = q.defer();
+        if(true !== _.isString(fileName)){
 
-    if(true !== _.isString(fileName)){
+           deferred.reject();
 
-       deferred.reject();
+        }
+        else{
 
-    }
-    else{
+            var exists = fs.existsSync(fileName);
 
-        fs.exists(fileName, function(exists){
             if(false === exists){
                 deferred.reject();
-                return;                
             }
-            deferred.resolve();    
-        });
+            else{
+                deferred.resolve();    
+            }
 
+        }
+
+        return deferred.promise;
+    };
+
+    return {
+        fileExists: fileExists
     }
-
-    return deferred.promise;
-};
-
-module.exports = {
-    fileExists: fileExists
 };
