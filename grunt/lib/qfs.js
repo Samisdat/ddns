@@ -102,10 +102,32 @@ module.exports = function(fs){
 
     };
 
+    var appendFile = function(file, data){
+
+        var deferred = q.defer();
+
+        fs.appendFile(
+            file,
+            data,
+            {encoding: 'utf8'},
+            function(err){
+                if (err){
+                    deferred.reject(err);
+                    return;
+                }
+                deferred.resolve();
+            }
+        );
+
+        return deferred.promise;
+
+    };
+
     return {
         fileExists: fileExists,
         unlink: unlink,
         readFile: readFile,
-        writeFile: writeFile
+        writeFile: writeFile,
+        appendFile: appendFile
     };
 };

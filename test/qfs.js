@@ -224,4 +224,50 @@ describe('method qfs.writeFile', function() {
 
 });
 
+describe('method qfs.appendFile', function() { 
+
+    var qfs;
+
+    beforeEach(function() {
+        var vfs = createVirtualFileSystem();
+        qfs = require('../grunt/lib/qfs')(vfs);
+    });
+
+    it('succeeded appending to a file', function(done) {
+
+        var promise = qfs.appendFile('/etc/bind/named.conf.local', ' append some more content');
+        promise.then(function(){
+
+            qfs.readFile('/etc/bind/named.conf.local').then(function(data){
+
+                if('just a file append some more content' !== data){
+                    done(new Error('read wrong content'));
+                    return;
+                }
+                done();
+            });    
+
+        });    
+
+        promise.fail(function(){
+            done(new Error('File not written'));
+        })    
+
+    }); 
+
+    it('fail write a file outside mounted dir', function(done) {
+
+        //qfs = require('../grunt/lib/qfs')();
+        var promise = qfs.writeFile('/tmp/bla', 'data');
+        promise.then(function(){
+            done(new Error('file don\'t exist'));
+        });    
+
+        promise.fail(function(){
+            done();
+        })    
+
+    }); 
+
+});
 
