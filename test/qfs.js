@@ -257,10 +257,10 @@ describe('method qfs.appendFile', function() {
 
     });
 
-    it('fail write a file outside mounted dir', function(done) {
+    it('fail appending to a file outside mounted dir', function(done) {
 
         //qfs = require('../grunt/lib/qfs')();
-        var promise = qfs.writeFile('/tmp/bla', 'data');
+        var promise = qfs.appendFile('/tmp/bla', 'data');
         promise.then(function(){
             done(new Error('file don\'t exist'));
         });
