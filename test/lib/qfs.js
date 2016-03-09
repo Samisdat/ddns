@@ -20,12 +20,12 @@ describe('method qfs.fileExists', function() {
 
     beforeEach(function() {
         var vfs = createVirtualFileSystem();
-        qfs = require('../grunt/lib/qfs')(vfs);
+        qfs = require('../../grunt/lib/qfs')(vfs);
     });
 
     it('method exists and returns a promise', function() {
 
-        qfs = require('../grunt/lib/qfs')();
+        qfs = require('../../grunt/lib/qfs')();
 
         expect(qfs.fileExists).to.exist;
         expect(qfs.fileExists).to.be.instanceof(Function);
@@ -87,7 +87,7 @@ describe('method qfs.unlink', function() {
 
     beforeEach(function() {
         var vfs = createVirtualFileSystem();
-        qfs = require('../grunt/lib/qfs')(vfs);
+        qfs = require('../../grunt/lib/qfs')(vfs);
     });
 
     it('succeeded an existing file', function(done) {
@@ -141,12 +141,12 @@ describe('method qfs.readFile', function() {
 
     beforeEach(function() {
         var vfs = createVirtualFileSystem();
-        qfs = require('../grunt/lib/qfs')(vfs);
+        qfs = require('../../grunt/lib/qfs')(vfs);
     });
 
     it('succeeded read existing file', function(done) {
 
-        //qfs = require('../grunt/lib/qfs')();
+        //qfs = require('../../grunt/lib/qfs')();
         var promise = qfs.readFile('/etc/bind/named.conf.local');
         promise.then(function(data){
             if ('just a file' !== data){
@@ -164,7 +164,7 @@ describe('method qfs.readFile', function() {
 
     it('fail read a not existing file', function(done) {
 
-        //qfs = require('../grunt/lib/qfs')();
+        //qfs = require('../../grunt/lib/qfs')();
         var promise = qfs.readFile('/etc/bind/not-a-file', 'data');
         promise.then(function(){
             done(new Error('file don\'t exist'));
@@ -185,12 +185,12 @@ describe('method qfs.writeFile', function() {
 
     beforeEach(function() {
         var vfs = createVirtualFileSystem();
-        qfs = require('../grunt/lib/qfs')(vfs);
+        qfs = require('../../grunt/lib/qfs')(vfs);
     });
 
     it('succeeded write a new file', function(done) {
 
-        //qfs = require('../grunt/lib/qfs')();
+        //qfs = require('../../grunt/lib/qfs')();
         var promise = qfs.writeFile('/etc/bind/foobar', 'some data');
         promise.then(function(){
 
@@ -212,7 +212,7 @@ describe('method qfs.writeFile', function() {
 
     it('fail write a file outside mounted dir', function(done) {
 
-        //qfs = require('../grunt/lib/qfs')();
+        //qfs = require('../../grunt/lib/qfs')();
         var promise = qfs.writeFile('/tmp/bla', 'data');
         promise.then(function(){
             done(new Error('file don\'t exist'));
@@ -232,7 +232,7 @@ describe('method qfs.appendFile', function() {
 
     beforeEach(function() {
         var vfs = createVirtualFileSystem();
-        qfs = require('../grunt/lib/qfs')(vfs);
+        qfs = require('../../grunt/lib/qfs')(vfs);
     });
 
     it('succeeded appending to a file', function(done) {
@@ -259,7 +259,7 @@ describe('method qfs.appendFile', function() {
 
     it('fail appending to a file outside mounted dir', function(done) {
 
-        //qfs = require('../grunt/lib/qfs')();
+        //qfs = require('../../grunt/lib/qfs')();
         var promise = qfs.appendFile('/tmp/bla', 'data');
         promise.then(function(){
             done(new Error('file don\'t exist'));
