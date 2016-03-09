@@ -1,7 +1,20 @@
 /*global module */
 
+var files = [
+    'grunt/lib/qfs.js',
+    'test/qfs.js'
+];
+
 var eslint = {
-	src: ['grunt/lib/qfs.js']
+    lint:{
+        src: files
+    },
+    lintAndFix:{
+        options:{
+            fix: true
+        },
+        src: files    
+    }
 };
 
 

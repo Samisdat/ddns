@@ -16,7 +16,7 @@ module.exports = function(fs){
 
         var deferred = q.defer();
 
-        if (true !== _.isString(fileName)){
+        if ( true !== _.isString(fileName)){
 
             deferred.reject();
 
