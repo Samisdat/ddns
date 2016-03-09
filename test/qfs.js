@@ -6,7 +6,7 @@ var createVirtualFileSystem = function(){
     
     var mem = new memfs.Volume;
     mem.mountSync('/etc/bind/', {
-        "named.conf.local": "just a file"
+        'named.conf.local': 'just a file'
     });
 
     return mem;
@@ -63,7 +63,7 @@ describe('method qfs.fileExists', function() {
 
     }); 
 
-    it('fails when file name is not a sstring', function(done) {
+    it('fails when file name is not a string', function(done) {
 
         //var promise = qfs.fileExists('/etc/bind/named.conf.local');
         var promise = qfs.fileExists();

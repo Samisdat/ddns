@@ -1,33 +1,35 @@
+'use strict';
+
 var _ = require('lodash');
 var q = require('q');
 
 module.exports = function(fs){
 
-    if(undefined === fs){
+    if (undefined === fs){
         fs = require('fs');
     }
 
     /**
-     *fs.exists is deprecated but fs.stat is not usable with memfs
+     * fs.exists is deprecated but fs.stat is not usable with memfs
      */
     var fileExists = function(fileName){
 
         var deferred = q.defer();
 
-        if(true !== _.isString(fileName)){
+        if (true !== _.isString(fileName)){
 
-           deferred.reject();
+            deferred.reject();
 
         }
-        else{
+        else {
 
             var exists = fs.existsSync(fileName);
 
-            if(false === exists){
+            if (false === exists){
                 deferred.reject();
             }
-            else{
-                deferred.resolve();    
+            else {
+                deferred.resolve();
             }
 
         }
@@ -38,31 +40,31 @@ module.exports = function(fs){
     var unlink = function(path){
         var deferred = q.defer();
 
-        if(true !== _.isString(path)){
+        if (true !== _.isString(path)){
 
-           deferred.reject();
+            deferred.reject();
 
         }
-        else{
+        else {
 
             fs.unlink(path, function(error){
-                if(undefined !== error){
+                if (undefined !== error){
                     deferred.reject();
                     return;
                 }
-                    
-                deferred.resolve();        
-                
+
+                deferred.resolve();
+
             });
         }
 
         return deferred.promise;
     };
 
-        
+
 
     return {
         fileExists: fileExists,
         unlink: unlink
-    }
+    };
 };
