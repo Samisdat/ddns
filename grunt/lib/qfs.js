@@ -123,11 +123,30 @@ module.exports = function(fs){
 
     };
 
+    var rename = function(oldPath, newPath){
+        var deferred = q.defer();
+
+        fs.rename(
+            oldPath,
+            newPath,
+            function(err){
+                if (err){
+                    deferred.reject(err);
+                    return;
+                }
+                deferred.resolve();
+            }
+        );
+
+        return deferred.promise;
+    };
+
     return {
         fileExists: fileExists,
         unlink: unlink,
         readFile: readFile,
         writeFile: writeFile,
-        appendFile: appendFile
+        appendFile: appendFile,
+        rename: rename
     };
 };

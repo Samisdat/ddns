@@ -273,3 +273,47 @@ describe('method qfs.appendFile', function() {
 
 });
 
+describe('method qfs.rename', function() {
+
+    var qfs;
+
+    beforeEach(function() {
+        var vfs = createVirtualFileSystem();
+        qfs = require('../../grunt/lib/qfs')(vfs);
+    });
+
+    it('succeeded renaming file', function(done) {
+
+        var promise = qfs.rename('/etc/bind/named.conf.local', '/etc/bind/named.conf.local.bac');
+        promise.then(function(){
+
+            qfs.fileExists('/etc/bind/named.conf.local.bac').then(function(){
+                done();
+            }).fail(function(){
+                done(new Error('renamed file does not exist'));
+            });
+
+        });
+
+        promise.fail(function(){
+            done(new Error('rename file failed'));
+        });
+
+    });
+
+    it('fail appending to a file outside mounted dir', function(done) {
+
+        //qfs = require('../../grunt/lib/qfs')();
+        var promise = qfs.appendFile('/tmp/bla', '/tmp/foo');
+        promise.then(function(){
+            done(new Error('should not work'));
+        });
+
+        promise.fail(function(){
+            done();
+        });
+
+    });
+
+});
+
