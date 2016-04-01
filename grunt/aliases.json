@@ -1,0 +1,23 @@
+
+{
+  "default": [],
+
+  "lint":{
+      "description": "Check js files coding style",
+      "tasks": [
+          "eslint:lint"
+      ]
+  },
+  "fix":{
+      "description": "Check js files coding style and fix errors",
+      "tasks": [
+          "eslint:lintAndFix"
+      ]
+  },
+  "mocha": {
+    "description": "run tests",
+    "tasks": [
+      "mochaTest"
+    ]
+  }
+}
