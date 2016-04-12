@@ -32,7 +32,7 @@ var rmdir = function(dir) {
 
 };
 
-describe('method qfs.fileExists', function() {
+describe('promise filesystem ', function() {
 
     beforeEach(function() {
 
@@ -45,293 +45,304 @@ describe('method qfs.fileExists', function() {
         fs.writeFileSync('/vfs-test/message.txt', 'Hello Node.js', 'utf8');
     });
 
-    it('method exists and returns a promise', function() {
+    describe('method qfs.fileExists', function() {
 
-        expect(qfs.fileExists).to.be.instanceof(Function);
+        it('method exists and returns a promise', function() {
 
-        var promise = qfs.fileExists('/vfs-test/message.txt');
+            expect(qfs.fileExists).to.be.instanceof(Function);
 
-        expect(q.isPromise(promise)).to.be.true;
+            var promise = qfs.fileExists('/vfs-test/message.txt');
 
-    });
+            expect(q.isPromise(promise)).to.be.true;
 
-    it('succeeded on existing file', function(done) {
-
-        //var promise = qfs.fileExists('/etc/bind/named.conf.local');
-        var promise = qfs.fileExists('/vfs-test/message.txt');
-        promise.then(function(){
-            done();
         });
 
-        promise.fail(function(){
-            done(new Error('File don\'t exist'));
+        it('succeeded on existing file', function(done) {
+
+            //var promise = qfs.fileExists('/etc/bind/named.conf.local');
+            var promise = qfs.fileExists('/vfs-test/message.txt');
+            promise.then(function(){
+                done();
+            });
+
+            promise.fail(function(){
+                done(new Error('File don\'t exist'));
+            });
+
         });
 
-    });
+        it('fails on not existing file', function(done) {
 
-    it('fails on not existing file', function(done) {
+            //var promise = qfs.fileExists('/etc/bind/named.conf.local');
+            var promise = qfs.fileExists('/vfs-test/not-existing.txt');
+            promise.then(function(){
+                done(new Error('file exists'));
+            });
 
-        //var promise = qfs.fileExists('/etc/bind/named.conf.local');
-        var promise = qfs.fileExists('/vfs-test/not-existing.txt');
-        promise.then(function(){
-            done(new Error('file exists'));
+            promise.fail(function(){
+                done();
+            });
+
         });
 
-        promise.fail(function(){
-            done();
-        });
+        it('fails when file name is not a string', function(done) {
 
-    });
+            //var promise = qfs.fileExists('/etc/bind/named.conf.local');
+            var promise = qfs.fileExists();
+            promise.then(function(){
+                done(new Error('file don\'t exist'));
+            });
 
-    it('fails when file name is not a string', function(done) {
+            promise.fail(function(){
+                done();
+            });
 
-        //var promise = qfs.fileExists('/etc/bind/named.conf.local');
-        var promise = qfs.fileExists();
-        promise.then(function(){
-            done(new Error('file don\'t exist'));
-        });
-
-        promise.fail(function(){
-            done();
-        });
-
-    });
-
-});
-
-describe('method qfs.unlink', function() {
-
-    var qfs;
-
-    beforeEach(function() {
-        var vfs = createVirtualFileSystem();
-        qfs = require('../../grunt/lib/qfs')(vfs);
-    });
-
-    it('succeeded an existing file', function(done) {
-
-        //var promise = qfs.fileExists('/etc/bind/named.conf.local');
-        var promise = qfs.unlink('/etc/bind/named.conf.local');
-        promise.then(function(){
-            done();
-        });
-
-        promise.fail(function(){
-            done(new Error('File don\'t exist'));
         });
 
     });
 
-    it('fails on not existing file', function(done) {
+    describe('method qfs.unlink', function() {
 
-        //var promise = qfs.fileExists('/etc/bind/named.conf.local');
-        var promise = qfs.unlink('/etc/bind/named.conf.loca');
-        promise.then(function(){
-            done(new Error('file exists'));
+        it('method exists and returns a promise', function() {
+
+            expect(qfs.unlink).to.be.instanceof(Function);
+
+            var promise = qfs.unlink('/vfs-test/message.txt');
+
+            expect(q.isPromise(promise)).to.be.true;
+
         });
 
-        promise.fail(function(){
-            done();
+        it('succeeded an existing file', function(done) {
+
+            var exist = fs.existsSync('/vfs-test/message.txt');
+            expect(exist).to.be.true;
+
+            var promise = qfs.unlink('/vfs-test/message.txt');
+            promise.then(function(){
+                done();
+            });
+
+            promise.fail(function(){
+                done(new Error('File don\'t exist'));
+            });
+
         });
+
+        it('fails on not existing file', function(done) {
+
+            var promise = qfs.unlink('/vfs-test/not-exist.txt');
+            promise.then(function(){
+                done(new Error('file exists'));
+            });
+
+            promise.fail(function(){
+                done();
+            });
+
+        });
+
+        it('fails when file name is not a string', function(done) {
+
+            //var promise = qfs.fileExists('/etc/bind/named.conf.local');
+            var promise = qfs.unlink();
+            promise.then(function(){
+                done(new Error('file don\'t exist'));
+            });
+
+            promise.fail(function(){
+                done();
+            });
+
+        });
+
 
     });
 
-    it('fails when file name is not a string', function(done) {
+    describe('method qfs.readFile', function() {
 
-        //var promise = qfs.fileExists('/etc/bind/named.conf.local');
-        var promise = qfs.unlink();
-        promise.then(function(){
-            done(new Error('file don\'t exist'));
+        it('method exists and returns a promise', function() {
+
+            expect(qfs.readFile).to.be.instanceof(Function);
+
+            var promise = qfs.readFile('/vfs-test/message.txt');
+
+            expect(q.isPromise(promise)).to.be.true;
+
         });
 
-        promise.fail(function(){
-            done();
-        });
+        it('succeeded read existing file', function(done) {
 
-    });
+            //qfs = require('../../grunt/lib/qfs')();
+            var promise = qfs.readFile('/vfs-test/message.txt');
+            promise.then(function(data){
 
-
-});
-
-describe('method qfs.readFile', function() {
-
-    var qfs;
-
-    beforeEach(function() {
-        var vfs = createVirtualFileSystem();
-        qfs = require('../../grunt/lib/qfs')(vfs);
-    });
-
-    it('succeeded read existing file', function(done) {
-
-        //qfs = require('../../grunt/lib/qfs')();
-        var promise = qfs.readFile('/etc/bind/named.conf.local');
-        promise.then(function(data){
-            if ('just a file' !== data){
-                done(new Error('read wrong content'));
-                return;
-            }
-            done();
-        });
-
-        promise.fail(function(){
-            done(new Error('File not written'));
-        });
-
-    });
-
-    it('fail read a not existing file', function(done) {
-
-        //qfs = require('../../grunt/lib/qfs')();
-        var promise = qfs.readFile('/etc/bind/not-a-file', 'data');
-        promise.then(function(){
-            done(new Error('file don\'t exist'));
-        });
-
-        promise.fail(function(){
-            done();
-        });
-
-    });
-
-});
-
-
-describe('method qfs.writeFile', function() {
-
-    var qfs;
-
-    beforeEach(function() {
-        var vfs = createVirtualFileSystem();
-        qfs = require('../../grunt/lib/qfs')(vfs);
-    });
-
-    it('succeeded write a new file', function(done) {
-
-        //qfs = require('../../grunt/lib/qfs')();
-        var promise = qfs.writeFile('/etc/bind/foobar', 'some data');
-        promise.then(function(){
-
-            qfs.readFile('/etc/bind/foobar').then(function(data){
-                if ('some data' !== data){
+                if ('Hello Node.js' !== data){
                     done(new Error('read wrong content'));
                     return;
                 }
                 done();
             });
 
+            promise.fail(function(){
+                done(new Error('File not written'));
+            });
+
         });
 
-        promise.fail(function(){
-            done(new Error('File not written'));
-        });
+        it('fail read a not existing file', function(done) {
 
-    });
+            //qfs = require('../../grunt/lib/qfs')();
+            var promise = qfs.readFile('/vfs-test/not-exist.txt');
+            promise.then(function(){
+                done(new Error('file don\'t exist'));
+            });
 
-    it('fail write a file outside mounted dir', function(done) {
-
-        //qfs = require('../../grunt/lib/qfs')();
-        var promise = qfs.writeFile('/tmp/bla', 'data');
-        promise.then(function(){
-            done(new Error('file don\'t exist'));
-        });
-
-        promise.fail(function(){
-            done();
-        });
-
-    });
-
-});
-
-describe('method qfs.appendFile', function() {
-
-    var qfs;
-
-    beforeEach(function() {
-        var vfs = createVirtualFileSystem();
-        qfs = require('../../grunt/lib/qfs')(vfs);
-    });
-
-    it('succeeded appending to a file', function(done) {
-
-        var promise = qfs.appendFile('/etc/bind/named.conf.local', ' append some more content');
-        promise.then(function(){
-
-            qfs.readFile('/etc/bind/named.conf.local').then(function(data){
-
-                if ('just a file append some more content' !== data){
-                    done(new Error('read wrong content'));
-                    return;
-                }
+            promise.fail(function(){
                 done();
             });
 
         });
 
-        promise.fail(function(){
-            done(new Error('File not written'));
-        });
-
     });
 
-    it('fail appending to a file outside mounted dir', function(done) {
 
-        //qfs = require('../../grunt/lib/qfs')();
-        var promise = qfs.appendFile('/tmp/bla', 'data');
-        promise.then(function(){
-            done(new Error('file don\'t exist'));
+    describe.skip('method qfs.writeFile', function() {
+
+        var qfs;
+
+        beforeEach(function() {
+            var vfs = createVirtualFileSystem();
+            qfs = require('../../grunt/lib/qfs')(vfs);
         });
 
-        promise.fail(function(){
-            done();
-        });
+        it('succeeded write a new file', function(done) {
 
-    });
+            //qfs = require('../../grunt/lib/qfs')();
+            var promise = qfs.writeFile('/etc/bind/foobar', 'some data');
+            promise.then(function(){
 
-});
+                qfs.readFile('/etc/bind/foobar').then(function(data){
+                    if ('some data' !== data){
+                        done(new Error('read wrong content'));
+                        return;
+                    }
+                    done();
+                });
 
-describe('method qfs.rename', function() {
+            });
 
-    var qfs;
-
-    beforeEach(function() {
-        var vfs = createVirtualFileSystem();
-        qfs = require('../../grunt/lib/qfs')(vfs);
-    });
-
-    it('succeeded renaming file', function(done) {
-
-        var promise = qfs.rename('/etc/bind/named.conf.local', '/etc/bind/named.conf.local.bac');
-        promise.then(function(){
-
-            qfs.fileExists('/etc/bind/named.conf.local.bac').then(function(){
-                done();
-            }).fail(function(){
-                done(new Error('renamed file does not exist'));
+            promise.fail(function(){
+                done(new Error('File not written'));
             });
 
         });
 
-        promise.fail(function(){
-            done(new Error('rename file failed'));
+        it('fail write a file outside mounted dir', function(done) {
+
+            //qfs = require('../../grunt/lib/qfs')();
+            var promise = qfs.writeFile('/tmp/bla', 'data');
+            promise.then(function(){
+                done(new Error('file don\'t exist'));
+            });
+
+            promise.fail(function(){
+                done();
+            });
+
         });
 
     });
 
-    it('fail appending to a file outside mounted dir', function(done) {
+    describe.skip('method qfs.appendFile', function() {
 
-        //qfs = require('../../grunt/lib/qfs')();
-        var promise = qfs.appendFile('/tmp/bla', '/tmp/foo');
-        promise.then(function(){
-            done(new Error('should not work'));
+        var qfs;
+
+        beforeEach(function() {
+            var vfs = createVirtualFileSystem();
+            qfs = require('../../grunt/lib/qfs')(vfs);
         });
 
-        promise.fail(function(){
-            done();
+        it('succeeded appending to a file', function(done) {
+
+            var promise = qfs.appendFile('/etc/bind/named.conf.local', ' append some more content');
+            promise.then(function(){
+
+                qfs.readFile('/etc/bind/named.conf.local').then(function(data){
+
+                    if ('just a file append some more content' !== data){
+                        done(new Error('read wrong content'));
+                        return;
+                    }
+                    done();
+                });
+
+            });
+
+            promise.fail(function(){
+                done(new Error('File not written'));
+            });
+
+        });
+
+        it('fail appending to a file outside mounted dir', function(done) {
+
+            //qfs = require('../../grunt/lib/qfs')();
+            var promise = qfs.appendFile('/tmp/bla', 'data');
+            promise.then(function(){
+                done(new Error('file don\'t exist'));
+            });
+
+            promise.fail(function(){
+                done();
+            });
+
+        });
+
+    });
+
+    describe.skip('method qfs.rename', function() {
+
+        var qfs;
+
+        beforeEach(function() {
+            var vfs = createVirtualFileSystem();
+            qfs = require('../../grunt/lib/qfs')(vfs);
+        });
+
+        it('succeeded renaming file', function(done) {
+
+            var promise = qfs.rename('/etc/bind/named.conf.local', '/etc/bind/named.conf.local.bac');
+            promise.then(function(){
+
+                qfs.fileExists('/etc/bind/named.conf.local.bac').then(function(){
+                    done();
+                }).fail(function(){
+                    done(new Error('renamed file does not exist'));
+                });
+
+            });
+
+            promise.fail(function(){
+                done(new Error('rename file failed'));
+            });
+
+        });
+
+        it('fail appending to a file outside mounted dir', function(done) {
+
+            //qfs = require('../../grunt/lib/qfs')();
+            var promise = qfs.appendFile('/tmp/bla', '/tmp/foo');
+            promise.then(function(){
+                done(new Error('should not work'));
+            });
+
+            promise.fail(function(){
+                done();
+            });
+
         });
 
     });
 
 });
-

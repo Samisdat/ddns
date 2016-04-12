@@ -19,15 +19,17 @@ var fs = require('fs');
         }
         else {
 
-            var exists = fs.existsSync(fileName);
-        
-            if (false === exists){
-                deferred.reject();
-            }
-            else {
-                deferred.resolve();
-            }
+            fs.exists(fileName, function(exists){
 
+                if (false === exists){
+                    deferred.reject();
+                }
+                else {
+                    deferred.resolve();
+                }
+
+            });
+        
         }
 
         return deferred.promise;
@@ -43,15 +45,25 @@ var fs = require('fs');
         }
         else {
 
-            fs.unlink(path, function(error){
-                if (undefined !== error){
-                    deferred.reject();
-                    return;
-                }
+            var exists = fileExists(path)
+            .then(function(){
 
-                deferred.resolve();
+                fs.unlink(path, function(error){
 
+                    if (null !== error){
+                        deferred.reject();
+                        return;
+                    }
+
+                    deferred.resolve();
+
+                });
+
+            })
+            .fail(function(){
+                deferred.reject();
             });
+
         }
 
         return deferred.promise;
@@ -65,7 +77,8 @@ var fs = require('fs');
             file,
             {encoding: 'utf8'},
             function(err, data){
-                if (err){
+
+                if (null !== err){
                     deferred.reject(err);
                     return;
                 }
