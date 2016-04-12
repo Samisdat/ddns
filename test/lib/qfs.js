@@ -2,6 +2,7 @@
 
 var expect = require('chai').expect;
 
+var q = require('q');
 var fs = require('fs');
 var notFs = require('not-fs');
 var path = require('path');
@@ -46,14 +47,11 @@ describe('method qfs.fileExists', function() {
 
     it('method exists and returns a promise', function() {
 
-        expect(qfs.fileExists).to.exist;
         expect(qfs.fileExists).to.be.instanceof(Function);
 
         var promise = qfs.fileExists('/vfs-test/message.txt');
 
-        expect(promise.then).to.be.instanceof(Function);
-        expect(promise.fail).to.be.instanceof(Function);
-        expect(promise.fin).to.be.instanceof(Function);
+        expect(q.isPromise(promise)).to.be.true;
 
     });
 
