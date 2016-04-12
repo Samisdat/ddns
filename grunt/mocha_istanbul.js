@@ -1,9 +1,11 @@
-var mocha_istanbul = {
+'use strict';
+
+var mochaIstanbul = {
     coverage: {
-        src: 'test/**/server.js' // a folder works nicely
+        src: [
+            'test/**/server.js'
+        ]
     }
 };
 
-module.exports = mocha_istanbul
-
-    //grunt.registerTask('coverage', ['mocha_istanbul:coverage']);
+module.exports = mochaIstanbul;
