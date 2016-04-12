@@ -3,17 +3,13 @@
 var _ = require('lodash');
 var q = require('q');
 
-module.exports = function(fs){
-
-    if (undefined === fs){
-        fs = require('fs');
-    }
+var fs = require('fs');
 
     /**
      * fs.exists is deprecated but fs.stat is not usable with memfs
      */
     var fileExists = function(fileName){
-
+        
         var deferred = q.defer();
 
         if ( true !== _.isString(fileName)){
@@ -24,7 +20,7 @@ module.exports = function(fs){
         else {
 
             var exists = fs.existsSync(fileName);
-
+        
             if (false === exists){
                 deferred.reject();
             }
@@ -74,6 +70,25 @@ module.exports = function(fs){
                     return;
                 }
                 deferred.resolve(data);
+            }
+        );
+
+        return deferred.promise;
+
+    };
+
+    var mkdir = function(path){
+
+        var deferred = q.defer();
+
+        fs.readFile(
+            path,
+            function(err){
+                if (err){
+                    deferred.reject(err);
+                    return;
+                }
+                deferred.resolve();
             }
         );
 
@@ -141,7 +156,8 @@ module.exports = function(fs){
         return deferred.promise;
     };
 
-    return {
+    module.exports = {
+        mkdir: mkdir,
         fileExists: fileExists,
         unlink: unlink,
         readFile: readFile,
