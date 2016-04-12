@@ -165,4 +165,4 @@ var fs = require('fs');
         appendFile: appendFile,
         rename: rename
     };
-};
+
