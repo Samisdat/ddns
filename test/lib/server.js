@@ -2,8 +2,6 @@
 
 var expect = require('chai').expect;
 
-var expect = require('chai').expect;
-
 var util = require('util');
 
 var fs = require('fs');
@@ -36,26 +34,77 @@ var rmdir = function(dir) {
 
 };
 
+describe('testing real file sys', function() {
 
-describe('integration test', function() {
-
-    describe('method server.backupConfLocal happypath', function() {
-    
     beforeEach(function() {
-
-        if(true === fs.existsSync('/etc/bind/')){
-            rmdir('/etc/bind/');
+        if(true === fs.existsSync('/ddns/key')){
+            rmdir('/ddns/key/');
         }
-
-        fs.mkdirSync('/etc/bind/');
-
-        fs.writeFileSync('/etc/bind/named.conf.local', 'Hello Node.js', 'utf8');
     });
+
+    it('createkey', function(done) {
+        
+        var dirExists = fs.existsSync('/ddns/key');
+        expect(dirExists).to.be.false;
+
+        server.createKey()
+        .then(function(){
+
+            var dirExists = fs.existsSync('/ddns/key');
+            expect(dirExists).to.be.true;
+
+            done();            
+            
+        });
+
+    });
+    
+});
+
+
+describe.skip('integration test', function() {
+
+    before(function() {
+        notFs.swapIn();
+    });
+    
+    after(function() {
+        notFs.swapOut();
+    });
+
+    describe('method server.backupConfLocal', function() {
+    
+        beforeEach(function() {
+            if(true === fs.existsSync('/etc/bind/')){
+                rmdir('/etc/bind/');
+            }
+
+            notFs.mkdirSync('/etc/bind/');
+
+            notFs.writeFileSync('/etc/bind/named.conf.local', 'Hello Node.js', 'utf8');
+        });
+
+        it('named.conf.local does not exists', function(done) {
+
+            notFs.unlinkSync('/etc/bind/named.conf.local');
+
+            var orginalExists = fs.existsSync('/etc/bind/named.conf.local');
+            expect(orginalExists).to.be.false;
+
+            server.backupConfLocal()
+            .then(function(){
+                done(new Error('should not work'));
+            })
+            .fail(function(){
+                done();
+            });
+
+        });
 
         it('method exists and returns a promise', function(done) {
 
-            var orginalExists = fs.existsSync('/etc/bind/named.conf.local');
-            var backupExists = fs.existsSync('/etc/bind/named.conf.local.bac');
+            var orginalExists = notFs.existsSync('/etc/bind/named.conf.local');
+            var backupExists = notFs.existsSync('/etc/bind/named.conf.local.bac');
 
             expect(orginalExists).to.be.true;
             expect(backupExists).to.be.false;
@@ -63,8 +112,8 @@ describe('integration test', function() {
             server.backupConfLocal()
             .then(function(){
 
-                var orginal = fs.existsSync('/etc/bind/named.conf.local');
-                var backup = fs.existsSync('/etc/bind/named.conf.local.bac');
+                var orginal = notFs.existsSync('/etc/bind/named.conf.local');
+                var backup = notFs.existsSync('/etc/bind/named.conf.local.bac');
 
                 if(false === orginal && true === backup){
                     done();
@@ -86,4 +135,28 @@ describe('integration test', function() {
         });
 
     });
+
+    describe('method server.backupConfLocal', function() {
+    
+        beforeEach(function() {
+            if(true === fs.existsSync('/etc/bind/')){
+                rmdir('/etc/bind/');
+            }
+
+            notFs.mkdirSync('/etc/bind/');
+
+            notFs.writeFileSync('/etc/bind/named.conf.local', 'Hello Node.js', 'utf8');
+        });
+
+        it('named.conf.local does not exists', function(done) {
+            server.firstSetup();
+        });
+
+        it('named.conf.local does not exists', function(done) {
+            notFs.unlinkSync('/etc/bind/named.conf.local');
+            server.firstSetup();
+        });
+    });
+
+    
 });
