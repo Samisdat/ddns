@@ -2,45 +2,65 @@
 
 var expect = require('chai').expect;
 
-var memfs = require('memfs');
+var fs = require('fs');
+var notFs = require('not-fs');
+var path = require('path');
 
-var createVirtualFileSystem = function(){
+var qfs = require('../../grunt/lib/qfs');
 
-    var mem = new memfs.Volume();
-    mem.mountSync('/etc/bind/', {
-        'named.conf.local': 'just a file'
-    });
+notFs.swapIn(); 
 
-    return mem;
+var rmdir = function(dir) {
+    var list = fs.readdirSync(dir);
+
+    for(var i = 0; i < list.length; i++) {
+        var filename = path.join(dir, list[i]);
+        var stat = fs.statSync(filename);
+        
+        if(filename == "." || filename == "..") {
+            // pass these files
+        } else if(stat.isDirectory()) {
+            // rmdir recursively
+            rmdir(filename);
+        } else {
+            // rm fiilename
+            fs.unlinkSync(filename);
+        }
+    }
+    fs.rmdirSync(dir);
+
 };
 
 describe('method qfs.fileExists', function() {
 
-    var qfs;
-
     beforeEach(function() {
-        var vfs = createVirtualFileSystem();
-        qfs = require('../../grunt/lib/qfs')(vfs);
+
+        if(true === fs.existsSync('/vfs-test/')){
+            rmdir('/vfs-test/');
+        }
+
+        fs.mkdirSync('/vfs-test');
+        fs.mkdirSync('/vfs-test/exist');
+        fs.writeFileSync('/vfs-test/message.txt', 'Hello Node.js', 'utf8');
     });
 
     it('method exists and returns a promise', function() {
 
-        qfs = require('../../grunt/lib/qfs')();
-
         expect(qfs.fileExists).to.exist;
         expect(qfs.fileExists).to.be.instanceof(Function);
 
-        var promise = qfs.fileExists('/etc/bind/named.conf.local');
+        var promise = qfs.fileExists('/vfs-test/message.txt');
 
         expect(promise.then).to.be.instanceof(Function);
         expect(promise.fail).to.be.instanceof(Function);
+        expect(promise.fin).to.be.instanceof(Function);
 
     });
 
     it('succeeded on existing file', function(done) {
 
         //var promise = qfs.fileExists('/etc/bind/named.conf.local');
-        var promise = qfs.fileExists('/etc/bind/named.conf.local');
+        var promise = qfs.fileExists('/vfs-test/message.txt');
         promise.then(function(){
             done();
         });
@@ -54,7 +74,7 @@ describe('method qfs.fileExists', function() {
     it('fails on not existing file', function(done) {
 
         //var promise = qfs.fileExists('/etc/bind/named.conf.local');
-        var promise = qfs.fileExists('/etc/bind/named.conf.loca');
+        var promise = qfs.fileExists('/vfs-test/not-existing.txt');
         promise.then(function(){
             done(new Error('file exists'));
         });
