@@ -94,7 +94,7 @@ var fs = require('fs');
 
         var deferred = q.defer();
 
-        fs.readFile(
+        fs.mkdir(
             path,
             function(err){
                 if (err){

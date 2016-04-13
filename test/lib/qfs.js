@@ -104,6 +104,38 @@ describe('promise filesystem ', function() {
 
     });
 
+    describe('method qfs.mkdir', function() {
+
+        it('method exists and returns a promise', function() {
+
+            expect(qfs.mkdir).to.be.instanceof(Function);
+
+            var promise = qfs.mkdir('/vfs-test/foobar');
+
+            expect(q.isPromise(promise)).to.be.true;
+
+        });
+
+        it('create a dir', function(done) {
+
+            var exist = fs.existsSync('/vfs-test/foobar');
+            expect(exist).to.be.false;
+
+            expect(qfs.mkdir).to.be.instanceof(Function);
+
+            qfs.mkdir('/vfs-test/foobar')
+            .then(function(){
+
+                var exist = fs.existsSync('/vfs-test/foobar');
+                expect(exist).to.be.true;
+                done();
+
+            });
+
+        });
+
+    });
+
     describe('method qfs.unlink', function() {
 
         it('method exists and returns a promise', function() {
