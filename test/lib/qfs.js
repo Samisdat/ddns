@@ -31,8 +31,11 @@ var rmdir = function(dir) {
     fs.rmdirSync(dir);
 
 };
-
 describe('promise filesystem ', function() {
+
+    after(function(){
+        notFs.swapOut(); 
+    });
 
     beforeEach(function() {
 
@@ -207,22 +210,15 @@ describe('promise filesystem ', function() {
     });
 
 
-    describe.skip('method qfs.writeFile', function() {
-
-        var qfs;
-
-        beforeEach(function() {
-            var vfs = createVirtualFileSystem();
-            qfs = require('../../grunt/lib/qfs')(vfs);
-        });
+    describe('method qfs.writeFile', function() {
 
         it('succeeded write a new file', function(done) {
 
             //qfs = require('../../grunt/lib/qfs')();
-            var promise = qfs.writeFile('/etc/bind/foobar', 'some data');
+            var promise = qfs.writeFile('/vfs-test/new-file.txt', 'some data');
             promise.then(function(){
 
-                qfs.readFile('/etc/bind/foobar').then(function(data){
+                qfs.readFile('/vfs-test/new-file.txt').then(function(data){
                     if ('some data' !== data){
                         done(new Error('read wrong content'));
                         return;
@@ -238,39 +234,18 @@ describe('promise filesystem ', function() {
 
         });
 
-        it('fail write a file outside mounted dir', function(done) {
-
-            //qfs = require('../../grunt/lib/qfs')();
-            var promise = qfs.writeFile('/tmp/bla', 'data');
-            promise.then(function(){
-                done(new Error('file don\'t exist'));
-            });
-
-            promise.fail(function(){
-                done();
-            });
-
-        });
-
     });
 
-    describe.skip('method qfs.appendFile', function() {
-
-        var qfs;
-
-        beforeEach(function() {
-            var vfs = createVirtualFileSystem();
-            qfs = require('../../grunt/lib/qfs')(vfs);
-        });
+    describe('method qfs.appendFile', function() {
 
         it('succeeded appending to a file', function(done) {
 
-            var promise = qfs.appendFile('/etc/bind/named.conf.local', ' append some more content');
+            var promise = qfs.appendFile('/vfs-test/message.txt', ' append some more content');
             promise.then(function(){
 
-                qfs.readFile('/etc/bind/named.conf.local').then(function(data){
+                qfs.readFile('/vfs-test/message.txt').then(function(data){
 
-                    if ('just a file append some more content' !== data){
+                    if ('Hello Node.js append some more content' !== data){
                         done(new Error('read wrong content'));
                         return;
                     }
@@ -285,60 +260,25 @@ describe('promise filesystem ', function() {
 
         });
 
-        it('fail appending to a file outside mounted dir', function(done) {
-
-            //qfs = require('../../grunt/lib/qfs')();
-            var promise = qfs.appendFile('/tmp/bla', 'data');
-            promise.then(function(){
-                done(new Error('file don\'t exist'));
-            });
-
-            promise.fail(function(){
-                done();
-            });
-
-        });
-
     });
 
-    describe.skip('method qfs.rename', function() {
-
-        var qfs;
-
-        beforeEach(function() {
-            var vfs = createVirtualFileSystem();
-            qfs = require('../../grunt/lib/qfs')(vfs);
-        });
+    describe('method qfs.rename', function() {
 
         it('succeeded renaming file', function(done) {
 
-            var promise = qfs.rename('/etc/bind/named.conf.local', '/etc/bind/named.conf.local.bac');
+            var promise = qfs.rename('/vfs-test/message.txt', '/vfs-test/message.txt.bac');
             promise.then(function(){
 
-                qfs.fileExists('/etc/bind/named.conf.local.bac').then(function(){
+                qfs.fileExists('/vfs-test/message.txt.bac').then(function(){
                     done();
                 }).fail(function(){
-                    done(new Error('renamed file does not exist'));
+                    done(new Error('renameenamed file does not exist'));
                 });
 
             });
 
             promise.fail(function(){
                 done(new Error('rename file failed'));
-            });
-
-        });
-
-        it('fail appending to a file outside mounted dir', function(done) {
-
-            //qfs = require('../../grunt/lib/qfs')();
-            var promise = qfs.appendFile('/tmp/bla', '/tmp/foo');
-            promise.then(function(){
-                done(new Error('should not work'));
-            });
-
-            promise.fail(function(){
-                done();
             });
 
         });
