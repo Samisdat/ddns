@@ -177,6 +177,24 @@ describe('promise filesystem ', function() {
 
         });
 
+        it('fails when failing to unlink existing file', function(done) {
+
+                
+            notFs.setForce('unlink', function(notFs){
+                return 'MOCK';
+            });
+
+            var promise = qfs.unlink('/vfs-test/message.txt');
+            promise.then(function(){
+                done(new Error('file exists'));
+            });
+
+            promise.fail(function(){
+                done();
+            });
+
+        });
+
         it('fails when file name is not a string', function(done) {
 
             //var promise = qfs.fileExists('/etc/bind/named.conf.local');
