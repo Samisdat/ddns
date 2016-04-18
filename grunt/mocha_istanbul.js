@@ -1,9 +1,16 @@
 'use strict';
 
 var mochaIstanbul = {
-    coverage: {
+    all: {
         src: [
-            'test/**/server.js'
+            'test/lib/qexec.js',
+            'test/lib/qfs.js',
+            'test/lib/server.js'
+        ]
+    },
+    server: {
+        src: [
+            'test/lib/server.js'
         ]
     }
 };
