@@ -35,7 +35,7 @@ var rmdir = function(dir) {
 
 };
 
-describe('testing real file sys', function() {
+describe('testing in real file sys', function() {
 
     beforeEach(function() {
         if(true === fs.existsSync('/ddns/key')){
@@ -54,7 +54,10 @@ describe('testing real file sys', function() {
             var dirExists = fs.existsSync('/ddns/key');
             expect(dirExists).to.be.true;
 
-            done();            
+            server.readKey()
+            .then(function(key){
+                done();
+            })
             
         });
 
@@ -62,8 +65,7 @@ describe('testing real file sys', function() {
     
 });
 
-
-describe.skip('integration test', function() {
+describe('integration test', function() {
 
     before(function() {
         notFs.swapIn();
@@ -137,21 +139,6 @@ describe.skip('integration test', function() {
 
     });
 
-    describe('method server.backupConfLocal', function() {
-    
-        beforeEach(function() {
-            if(true === fs.existsSync('/etc/bind/')){
-                rmdir('/etc/bind/');
-            }
-
-            notFs.mkdirSync('/etc/bind/');
-
-            notFs.writeFileSync('/etc/bind/named.conf.local', 'Hello Node.js', 'utf8');
-        });
-
-        it('named.conf.local does not exists', function(done) {
-            server.firstSetup();
-        });
     describe('method server.readKey', function() {
     
         beforeEach(function() {
@@ -159,7 +146,6 @@ describe.skip('integration test', function() {
                 rmdir('/ddns/key/');
             }
 
-            notFs.unlinkSync('/etc/bind/named.conf.local');
             notFs.mkdirSync('/ddns/key/');
 
             var key = [];
@@ -179,9 +165,9 @@ describe.skip('integration test', function() {
 
         it('method exists and returns a promise', function() {
 
-            expect(server.addKeyToConfLocal).to.be.instanceof(Function);
+            expect(server.readKey).to.be.instanceof(Function);
 
-            var promise = server.addKeyToConfLocal();
+            var promise = server.readKey();
 
             expect(q.isPromise(promise)).to.be.true;
 
@@ -197,6 +183,83 @@ describe.skip('integration test', function() {
                 done('no key found')
             });
         });
+
+    });
+
+    describe('method server.addKeyToConfLocal', function() {
+    
+        beforeEach(function() {
+
+            if(true === fs.existsSync('/etc/bind/')){
+                rmdir('/etc/bind/');
+            }
+
+            notFs.mkdirSync('/etc/bind/');
+
+            notFs.writeFileSync('/etc/bind/named.conf.local', '', 'utf8');
+
+            if(true === fs.existsSync('/ddns/key/')){
+                rmdir('/ddns/key/');
+            }
+
+            notFs.mkdirSync('/ddns/key/');
+
+            var key = [];
+            key.push('Private-key-format: v1.3');
+            key.push('Algorithm: 157 (HMAC_MD5)');
+            key.push('Key: aaaaaaaaaaaaaaaaaaaaaa==');
+            key.push('Bits: AAA=');
+            key.push('Created: 20160413014957');
+            key.push('Publish: 20160413014957');
+            key.push('Activate: 20160413014957');           
+
+            notFs.writeFileSync('/ddns/key/Kddns_update.+157+52345.private', key.join("\n"), 'utf8');
+
+            notFs.writeFileSync('/ddns/key/Kddns_update.+157+52345.key', 'DDNS_UPDATE. IN KEY 0 3 157 aaaaaaaaaaaaaaaaaaaaaa==', 'utf8');            
+
+            if(true === fs.existsSync('/var/docker-ddns/tpls/')){
+                rmdir('/var/docker-ddns/tpls/');
+            }
+
+            notFs.copyFromFs('/var/docker-ddns/tpls/', true);
+
+
+        });
+
+        it('method exists and returns a promise', function() {
+
+            expect(server.addKeyToConfLocal).to.be.instanceof(Function);
+
+            var promise = server.addKeyToConfLocal();
+
+            expect(q.isPromise(promise)).to.be.true;
+
+        });
+
+        it('find key', function(done) {
+
+            server.addKeyToConfLocal()
+            .then(function(){
+                var localConf = fs.readFileSync('/etc/bind/named.conf.local');
+
+                var expectLocalConf = [];
+                expectLocalConf.push('');
+                expectLocalConf.push('key "DDNS_UPDATE" {');
+                expectLocalConf.push('    algorithm hmac-md5;');
+                expectLocalConf.push('    secret "aaaaaaaaaaaaaaaaaaaaaa==";');
+                expectLocalConf.push('};');   
+                expectLocalConf.push('');                    
+                expectLocalConf = expectLocalConf.join("\n")
+               
+                expect(localConf).to.be.equal(expectLocalConf);                                
+               
+                done();
+            })
+            .fail(function(){
+                done('no key found')
+            });
+        });
+
     });
 
     

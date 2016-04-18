@@ -70,6 +70,7 @@ module.exports = function (grunt) {
         
         qfs.readdir('/ddns/key')
         .then(function(files){
+
             if(2 !== files.length){
                 deferred.reject();    
             }
@@ -87,7 +88,7 @@ module.exports = function (grunt) {
 
             qfs.readFile('/ddns/key/' + privateKey)
             .then(function(data){
-                
+
                 var key = data.match(/Key\: (.*?)[\n\r]/m);
 
                 if(null === key){
@@ -109,6 +110,38 @@ module.exports = function (grunt) {
 
         return deferred.promise;
     };
+
+    var addKeyToConfLocal = function(){
+
+        var deferred = Q.defer();
+
+        readKey()
+        .then(function (key) {
+
+
+            if(undefined === key){
+                deferred.reject('could not read key')
+            }
+
+            var keyTpl = fs.readFileSync(path_to_tpls + 'key',{encoding:'utf8'});
+
+            var keyPart = grunt.template.process(keyTpl, {data: {dnssec_key:key}});
+
+            qfs.appendFile('/etc/bind/named.conf.local', keyPart)
+            .then(function(){
+                deferred.resolve();
+            });            
+
+        })
+        .fail(function(){
+
+            deferred.reject('could not read key');
+
+        });
+
+        return deferred.promise;
+    };
+
     var firstSetup = function(){
 
         var deferred = Q.defer();
@@ -165,6 +198,7 @@ module.exports = function (grunt) {
         createKey:createKey,
         readKey:readKey,
         backupConfLocal: backupConfLocal,
+        addKeyToConfLocal: addKeyToConfLocal,
         firstSetup: firstSetup
     };
 
