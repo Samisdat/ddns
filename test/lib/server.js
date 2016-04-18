@@ -3,6 +3,7 @@
 var expect = require('chai').expect;
 
 var util = require('util');
+var q = require('q');
 
 var fs = require('fs');
 
@@ -151,10 +152,50 @@ describe.skip('integration test', function() {
         it('named.conf.local does not exists', function(done) {
             server.firstSetup();
         });
+    describe('method server.readKey', function() {
+    
+        beforeEach(function() {
+            if(true === fs.existsSync('/ddns/key/')){
+                rmdir('/ddns/key/');
+            }
 
-        it('named.conf.local does not exists', function(done) {
             notFs.unlinkSync('/etc/bind/named.conf.local');
-            server.firstSetup();
+            notFs.mkdirSync('/ddns/key/');
+
+            var key = [];
+            key.push('Private-key-format: v1.3');
+            key.push('Algorithm: 157 (HMAC_MD5)');
+            key.push('Key: aaaaaaaaaaaaaaaaaaaaaa==');
+            key.push('Bits: AAA=');
+            key.push('Created: 20160413014957');
+            key.push('Publish: 20160413014957');
+            key.push('Activate: 20160413014957');           
+
+            notFs.writeFileSync('/ddns/key/Kddns_update.+157+52345.private', key.join("\n"), 'utf8');
+
+            notFs.writeFileSync('/ddns/key/Kddns_update.+157+52345.key', 'DDNS_UPDATE. IN KEY 0 3 157 aaaaaaaaaaaaaaaaaaaaaa==', 'utf8');            
+
+        });
+
+        it('method exists and returns a promise', function() {
+
+            expect(server.addKeyToConfLocal).to.be.instanceof(Function);
+
+            var promise = server.addKeyToConfLocal();
+
+            expect(q.isPromise(promise)).to.be.true;
+
+        });
+
+        it('find key', function(done) {
+            server.readKey()
+            .then(function(key){
+                expect(key).to.be.equal('aaaaaaaaaaaaaaaaaaaaaa==');                
+                done();
+            })
+            .fail(function(){
+                done('no key found')
+            });
         });
     });
 
