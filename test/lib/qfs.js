@@ -136,6 +136,37 @@ describe('promise filesystem ', function() {
 
     });
 
+    describe('method qfs.readdir', function() {
+
+        it('method exists and returns a promise', function() {
+
+            expect(qfs.readdir).to.be.instanceof(Function);
+
+            var promise = qfs.readdir('/vfs-test/');
+
+            expect(q.isPromise(promise)).to.be.true;
+
+        });
+
+        it('read a dir', function(done) {
+
+            var exist = fs.existsSync('/vfs-test/');
+            expect(exist).to.be.true;
+
+            qfs.readdir('/vfs-test/')
+            .then(function(files){
+
+                expect(files).to.deep.equal([ 'exist', 'message.txt' ]);
+                done();
+
+            });
+
+        });
+
+    });
+
+
+
     describe('method qfs.unlink', function() {
 
         it('method exists and returns a promise', function() {

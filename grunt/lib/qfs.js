@@ -109,6 +109,23 @@ var fs = require('fs');
 
     };
 
+    var readdir = function(path){
+        var deferred = q.defer();
+
+        fs.readdir(
+            path,
+            function(err, files){
+                if (err){
+                    deferred.reject(err);
+                    return;
+                }
+                deferred.resolve(files);
+            }
+        );
+
+        return deferred.promise;
+    };
+
     var writeFile = function(file, data){
 
         var deferred = q.defer();
@@ -171,6 +188,7 @@ var fs = require('fs');
 
     module.exports = {
         mkdir: mkdir,
+        readdir: readdir,
         fileExists: fileExists,
         unlink: unlink,
         readFile: readFile,
