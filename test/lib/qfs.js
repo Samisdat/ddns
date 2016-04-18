@@ -9,8 +9,6 @@ var path = require('path');
 
 var qfs = require('../../grunt/lib/qfs');
 
-notFs.swapIn(); 
-
 var rmdir = function(dir) {
     var list = fs.readdirSync(dir);
 
@@ -32,6 +30,10 @@ var rmdir = function(dir) {
 
 };
 describe('promise filesystem ', function() {
+
+    before(function(){
+        notFs.swapIn(); 
+    });
 
     after(function(){
         notFs.swapOut(); 
@@ -62,7 +64,6 @@ describe('promise filesystem ', function() {
 
         it('succeeded on existing file', function(done) {
 
-            //var promise = qfs.fileExists('/etc/bind/named.conf.local');
             var promise = qfs.fileExists('/vfs-test/message.txt');
             promise.then(function(){
                 done();
@@ -76,7 +77,6 @@ describe('promise filesystem ', function() {
 
         it('fails on not existing file', function(done) {
 
-            //var promise = qfs.fileExists('/etc/bind/named.conf.local');
             var promise = qfs.fileExists('/vfs-test/not-existing.txt');
             promise.then(function(){
                 done(new Error('file exists'));
@@ -90,7 +90,6 @@ describe('promise filesystem ', function() {
 
         it('fails when file name is not a string', function(done) {
 
-            //var promise = qfs.fileExists('/etc/bind/named.conf.local');
             var promise = qfs.fileExists();
             promise.then(function(){
                 done(new Error('file don\'t exist'));
@@ -134,6 +133,23 @@ describe('promise filesystem ', function() {
 
         });
 
+        it('fails on creating a dir', function(done) {
+
+            notFs.setForce('mkdir', function(notFs){
+                return 'MOCK';
+            });
+
+            var promise = qfs.mkdir('/vfs-test/not-existing');
+            promise.then(function(){
+                done(new Error('should fail'));
+            });
+
+            promise.fail(function(){
+                done();
+            });
+
+        });
+
     });
 
     describe('method qfs.readdir', function() {
@@ -163,9 +179,20 @@ describe('promise filesystem ', function() {
 
         });
 
+        it('fails on reading a not existing dir', function(done) {
+
+            var promise = qfs.readdir('/vfs-test/not-existing');
+            promise.then(function(){
+                done(new Error('should fail'));
+            });
+
+            promise.fail(function(){
+                done();
+            });
+
+        });
+
     });
-
-
 
     describe('method qfs.unlink', function() {
 
@@ -209,7 +236,6 @@ describe('promise filesystem ', function() {
         });
 
         it('fails when failing to unlink existing file', function(done) {
-
                 
             notFs.setForce('unlink', function(notFs){
                 return 'MOCK';
@@ -228,7 +254,6 @@ describe('promise filesystem ', function() {
 
         it('fails when file name is not a string', function(done) {
 
-            //var promise = qfs.fileExists('/etc/bind/named.conf.local');
             var promise = qfs.unlink();
             promise.then(function(){
                 done(new Error('file don\'t exist'));
@@ -239,7 +264,6 @@ describe('promise filesystem ', function() {
             });
 
         });
-
 
     });
 
@@ -257,7 +281,6 @@ describe('promise filesystem ', function() {
 
         it('succeeded read existing file', function(done) {
 
-            //qfs = require('../../grunt/lib/qfs')();
             var promise = qfs.readFile('/vfs-test/message.txt');
             promise.then(function(data){
 
@@ -276,7 +299,6 @@ describe('promise filesystem ', function() {
 
         it('fail read a not existing file', function(done) {
 
-            //qfs = require('../../grunt/lib/qfs')();
             var promise = qfs.readFile('/vfs-test/not-exist.txt');
             promise.then(function(){
                 done(new Error('file don\'t exist'));
@@ -295,7 +317,6 @@ describe('promise filesystem ', function() {
 
         it('succeeded write a new file', function(done) {
 
-            //qfs = require('../../grunt/lib/qfs')();
             var promise = qfs.writeFile('/vfs-test/new-file.txt', 'some data');
             promise.then(function(){
 
@@ -311,6 +332,23 @@ describe('promise filesystem ', function() {
 
             promise.fail(function(){
                 done(new Error('File not written'));
+            });
+
+        });
+
+        it('fails for some reason', function(done) {
+
+            notFs.setForce('writeFile', function(notFs){
+                return 'MOCK';
+            });
+
+            var promise = qfs.writeFile('/vfs-test/message.txt', 'some data');
+            promise.then(function(){
+                done(new Error('file exists'));
+            });
+
+            promise.fail(function(){
+                done();
             });
 
         });
@@ -341,6 +379,23 @@ describe('promise filesystem ', function() {
 
         });
 
+        it('fails for some reason', function(done) {
+                
+            notFs.setForce('appendFile', function(notFs){
+                return 'MOCK';
+            });
+
+            var promise = qfs.appendFile('/vfs-test/message.txt', 'some data');
+            promise.then(function(){
+                done(new Error('file exists'));
+            });
+
+            promise.fail(function(){
+                done();
+            });
+
+        });        
+
     });
 
     describe('method qfs.rename', function() {
@@ -363,6 +418,23 @@ describe('promise filesystem ', function() {
             });
 
         });
+
+        it('fails for some reason', function(done) {
+
+            notFs.setForce('rename', function(notFs){
+                return 'MOCK';
+            });
+
+            var promise = qfs.rename('/vfs-test/message.txt', '/vfs-test/new-message.txt');
+            promise.then(function(){
+                done(new Error('file exists'));
+            });
+
+            promise.fail(function(){
+                done();
+            });
+
+        });                
 
     });
 
