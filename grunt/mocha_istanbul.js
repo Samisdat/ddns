@@ -12,6 +12,11 @@ var mochaIstanbul = {
         src: [
             'test/lib/server.js'
         ]
+    },
+    rmdir: {
+        src: [
+            'test/lib/rmdir.js'
+        ]
     }
 };
 

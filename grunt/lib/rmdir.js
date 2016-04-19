@@ -9,7 +9,6 @@ var rmdirSync = function(dir) {
         var filename = path.join(dir, list[i]);
 
         var stat = fs.statSync(filename);
-        console.log(filename, stat.isDirectory());
         
         if(stat.isDirectory()) {
             

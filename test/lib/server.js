@@ -7,33 +7,11 @@ var q = require('q');
 
 var fs = require('fs');
 
-var path = require("path");
-
+var rmdir = require('../../grunt/lib/rmdir');
 var grunt = require('grunt');
 var server = require('../../grunt/lib/server')(grunt);
 
 var notFs = require('not-fs');
-
-var rmdir = function(dir) {
-    var list = fs.readdirSync(dir);
-
-    for(var i = 0; i < list.length; i++) {
-        var filename = path.join(dir, list[i]);
-        var stat = fs.statSync(filename);
-        
-        if(filename == "." || filename == "..") {
-            // pass these files
-        } else if(stat.isDirectory()) {
-            // rmdir recursively
-            rmdir(filename);
-        } else {
-            // rm fiilename
-            fs.unlinkSync(filename);
-        }
-    }
-    fs.rmdirSync(dir);
-
-};
 
 describe('testing in real file sys', function() {
 
@@ -73,6 +51,60 @@ describe('integration test', function() {
     
     after(function() {
         notFs.swapOut();
+    });
+
+    describe('method server.removeConfLocal and server.createConfLocal', function() {
+    
+        beforeEach(function() {
+            if(true === fs.existsSync('/etc/bind/')){
+                rmdir('/etc/bind/');
+            }
+
+            notFs.mkdirSync('/etc/bind/');
+
+            notFs.writeFileSync('/etc/bind/named.conf.local', 'Hello Node.js', 'utf8');
+        });
+
+        it('removeConfLocal', function(done) {
+
+            var exists = fs.existsSync('/etc/bind/named.conf.local');
+            expect(exists).to.be.true;
+
+            server.removeConfLocal()
+            .then(function(){
+
+                var exists = fs.existsSync('/etc/bind/named.conf.local');
+                expect(exists).to.be.false;
+
+                done();
+            })
+            .fail(function(){
+                done(new Error('should work'));
+            });
+
+        });
+
+        it('createConfLocal', function(done) {
+
+            notFs.unlinkSync('/etc/bind/named.conf.local');
+
+            var exists = fs.existsSync('/etc/bind/named.conf.local');
+            expect(exists).to.be.false;
+
+            server.createConfLocal()
+            .then(function(){
+
+                var exists = fs.existsSync('/etc/bind/named.conf.local');
+                expect(exists).to.be.true;
+
+                done();
+            })
+            .fail(function(){
+                done(new Error('should work'));
+            });
+
+        });
+
     });
 
     describe('method server.backupConfLocal', function() {
@@ -262,5 +294,77 @@ describe('integration test', function() {
 
     });
 
+    describe('method server.createZone', function() {
+    
+        beforeEach(function() {
+
+            if(true === fs.existsSync('/etc/bind/')){
+                rmdir('/etc/bind/');
+            }
+
+            notFs.mkdirSync('/etc/bind/');
+
+            notFs.writeFileSync('/etc/bind/named.conf.local', '', 'utf8');
+
+        });
+
+        it('method exists and returns a promise', function() {
+
+            expect(server.createZone).to.be.instanceof(Function);
+
+            var promise = server.createZone();
+
+            expect(q.isPromise(promise)).to.be.true;
+
+        });
+
+        it('createZone', function(done) {
+
+            var dbFileExists = fs.existsSync('/etc/bind/db.dev.example.com');
+            expect(dbFileExists).to.be.false;
+
+            var localConf = fs.readFileSync('/etc/bind/named.conf.local', '', 'utf8');
+            expect(localConf).to.be.equal('');
+
+            server.createZone()
+            .then(function(){
+
+                var localConfExpect = [];
+                localConfExpect.push('zone "dev.example.com" {');
+                localConfExpect.push('    type master;');
+                localConfExpect.push('    file "/etc/bind/db.dev.example.com";');
+                localConfExpect.push('    allow-update { key "DDNS_UPDATE"; };');
+                localConfExpect.push('};');
+                localConfExpect.push('');
+
+                var localConf = fs.readFileSync('/etc/bind/named.conf.local');
+                
+                expect(localConf).to.be.equal(localConfExpect.join("\n"));
+
+                var dbFileExpect = [];
+                dbFileExpect.push('$TTL    30');
+                dbFileExpect.push('@    IN    SOA    ns.example.com. root.localhost. (');
+                dbFileExpect.push('                  3        ; Serial');
+                dbFileExpect.push('             604800        ; Refresh');
+                dbFileExpect.push('              86400        ; Retry');
+                dbFileExpect.push('            2419200        ; Expire');
+                dbFileExpect.push('              86400 )    ; Negative Cache TTL');
+                dbFileExpect.push(';');
+                dbFileExpect.push('@        IN    NS    ns.example.com.');
+                dbFileExpect.push('@        IN    A    127.0.0.1');
+                dbFileExpect.push('*        IN    CNAME     dev.example.com.');
+                dbFileExpect.push('');
+
+                var dbFile = fs.readFileSync('/etc/bind/db.dev.example.com');
+
+                expect(dbFile).to.be.equal(dbFileExpect.join("\n"));
+
+                done();
+
+            });
+
+        });
+
+    });
     
 });

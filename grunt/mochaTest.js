@@ -7,6 +7,7 @@ var mocha = {
     },
     all:{
         src: [    
+            'test/lib/rmdir.js',
             'test/lib/qexec.js',
             'test/lib/qfs.js',
             'test/lib/server.js'
@@ -15,6 +16,11 @@ var mocha = {
     server:{
         src: [    
             'test/lib/server.js'
+        ]        
+    },
+    rmdir:{
+        src: [    
+            'test/lib/rmdir.js'
         ]        
     }
 };

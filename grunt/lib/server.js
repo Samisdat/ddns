@@ -8,6 +8,10 @@ var qfs = require('./qfs');
 module.exports = function (grunt) {
 
     var path_to_tpls = '/var/docker-ddns/tpls/';
+
+    var nameServer = 'ns.example.com';
+    var ddnsDomain = 'dev.example.com';
+
     var createKey = function(){
 
         var deferred = Q.defer();
@@ -142,6 +146,25 @@ module.exports = function (grunt) {
         return deferred.promise;
     };
 
+    var createZone = function(){
+
+        var data = {
+            nameServer: nameServer,
+            ddnsDomain: ddnsDomain
+        };
+
+        var dbTpl = fs.readFileSync(path_to_tpls + 'db',{encoding:'utf8'});
+        var db = grunt.template.process(dbTpl, {data: data});
+
+        var zoneTpl = fs.readFileSync(path_to_tpls + 'zone',{encoding:'utf8'});
+        var zone = grunt.template.process(zoneTpl, {data: data});
+
+        return Q.all([
+            qfs.writeFile('/etc/bind/db.' + ddnsDomain, db),
+            qfs.appendFile('/etc/bind/named.conf.local', zone)
+        ]);        
+    };
+
     var firstSetup = function(){
 
         var deferred = Q.defer();
@@ -197,8 +220,11 @@ module.exports = function (grunt) {
     return{
         createKey:createKey,
         readKey:readKey,
+        removeConfLocal: removeConfLocal,
+        createConfLocal: createConfLocal,
         backupConfLocal: backupConfLocal,
         addKeyToConfLocal: addKeyToConfLocal,
+        createZone: createZone,
         firstSetup: firstSetup
     };
 
