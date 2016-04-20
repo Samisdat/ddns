@@ -10,6 +10,7 @@ var mocha = {
             'test/lib/rmdir.js',
             'test/lib/qexec.js',
             'test/lib/qfs.js',
+            'test/lib/config.js',
             'test/lib/server.js'
         ]        
     },
@@ -21,6 +22,11 @@ var mocha = {
     rmdir:{
         src: [    
             'test/lib/rmdir.js'
+        ]        
+    },
+    config:{
+        src: [    
+            'test/lib/config.js'
         ]        
     }
 };
