@@ -3,6 +3,7 @@
 var mochaIstanbul = {
     all: {
         src: [
+            'test/lib/rmdir.js',
             'test/lib/qexec.js',
             'test/lib/qfs.js',
             'test/lib/server.js'
