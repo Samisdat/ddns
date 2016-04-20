@@ -53,6 +53,55 @@ describe('integration test', function() {
         notFs.swapOut();
     });
 
+    describe('method server.loadConfig', function() {
+    
+        beforeEach(function() {
+            if(true === fs.existsSync('/ddns')){
+                rmdir('/ddns');
+            }
+
+            notFs.mkdirSync('/ddns');
+
+        });
+
+        it('config without config file', function(done) {
+
+            var exists = fs.existsSync('/ddns/config.json');
+            expect(exists).to.be.false;
+
+            server.loadConfig()
+            .then(function(config){
+                
+                expect(config.getNameServer()).to.be.equal(undefined);
+                expect(config.getZones()).to.deep.equal([]);
+                done();
+            });
+        });
+
+        it('config with config file', function(done) {
+
+            fs.writeFileSync(
+                '/ddns/config.json', 
+                JSON.stringify({
+                    nameServer: 'ns.example.com',
+                    zones: ['dev.example.com','dev.example.org']
+                })
+            , 'utf8');
+
+            var exists = fs.existsSync('/ddns/config.json');
+            expect(exists).to.be.true;
+
+            server.loadConfig()
+            .then(function(config){
+                
+                expect(config.getNameServer()).to.be.equal('ns.example.com');
+                expect(config.getZones()).to.deep.equal(['dev.example.com','dev.example.org']);
+                done();
+            });
+        });
+
+    });
+
     describe('method server.removeConfLocal and server.createConfLocal', function() {
     
         beforeEach(function() {

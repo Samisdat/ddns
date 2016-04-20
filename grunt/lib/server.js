@@ -7,7 +7,25 @@ var qfs = require('./qfs');
 
 module.exports = function (grunt) {
 
+    var config;
+
     var path_to_tpls = '/var/docker-ddns/tpls/';
+
+    var loadConfig = function(){
+
+        var deferred = Q.defer();
+
+        qfs.readFile('/ddns/config.json')
+        .then(function(data){
+            deferred.resolve(new Config(data));
+        })
+        .fail(function(){
+            deferred.resolve(new Config());
+        })
+
+        return deferred.promise;
+
+    };
 
     var nameServer = 'ns.example.com';
     var ddnsDomain = 'dev.example.com';
@@ -218,6 +236,7 @@ module.exports = function (grunt) {
     };
 
     return{
+        loadConfig: loadConfig,
         createKey:createKey,
         readKey:readKey,
         removeConfLocal: removeConfLocal,
