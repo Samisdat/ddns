@@ -1,72 +1,129 @@
 'use strict';
 
-var Config = function(jsonString) {
+var fs = require('fs');
 
-    if(undefined === jsonString){
-        jsonString = '{}';
-    }
+var config = (function() {
 
-    var json = JSON.parse(jsonString);
+    var configFilePath = '/ddns/config.json';
 
-    this.nameServer = json.nameServer || undefined;
-    this.zones = json.zones || [];
-
-};
-
-Config.prototype.setNameServer = function(nameServer){
-
-    this.nameServer = nameServer;
-
-};
-
-Config.prototype.getNameServer = function(){
-
-    return this.nameServer;
-
-};
-
-Config.prototype.getZones = function(){
-
-    return this.zones;
-
-};
-
-Config.prototype.addZone = function(zone){
-
-    var alreadyExists = false;
-
-    for(var i = 0, x = this.zones.length; i < x; i += 1){
-        if(zone === this.zones[i]){
-            alreadyExists = true;
-            break;
-        }
-    }
-
-    if(true === alreadyExists){
-        return;
-    }
-    
-    this.zones.push(zone);
-
-};
-
-Config.prototype.removeZone = function(zone){
-
+    var nameServer;
     var zones = [];
 
-    for(var i = 0, x = this.zones.length; i < x; i += 1){
+    var tplPath = '/var/docker-ddns/tpls/';
 
-        if(zone === this.zones[i]){
-            
-            continue;
+    var load = function(){
 
+        if(false === fs.existsSync(configFilePath)){
+            nameServer = undefined;
+            zones = [];
+            tplPath = '/var/docker-ddns/tpls/';            
+            return;
         }
 
-        zones.push(this.zones[i]);
-    }
-    
-    this.zones = zones;
+        var json = fs.readFileSync(configFilePath, {encoding: 'utf8'});
 
-};
+        nameServer = json.nameServer;
+        
+        zones = json.zones;
 
-module.exports = Config;
+        tplPath = json.tplPath;    
+
+    };
+    load();
+
+    var persist = function(){
+
+        var json = {};
+        json.nameServer = nameServer;
+        json.zones = zones;
+        json.tplPath = tplPath;
+
+        json = JSON.stringify(json);
+        fs.writeFileSync(configFilePath, json,  {encoding: 'utf8'});
+
+    };
+
+
+
+    var setNameServer = function(newNameServer){
+
+        nameServer = newNameServer;
+        persist();
+
+    };
+
+    var getNameServer = function(){
+
+        return nameServer;
+
+    };
+
+    var getZones = function(){
+
+        return zones;
+
+    };
+
+    var addZone = function(zone){
+
+        var alreadyExists = false;
+
+        for(var i = 0, x = zones.length; i < x; i += 1){
+            if(zone === zones[i]){
+                alreadyExists = true;
+                break;
+            }
+        }
+
+        if(true === alreadyExists){
+            return;
+        }
+        
+        zones.push(zone);
+
+        persist();
+
+    };
+
+    var removeZone = function(zone){
+
+        var _zones = [];
+
+        for(var i = 0, x = zones.length; i < x; i += 1){
+
+            if(zone === zones[i]){
+                
+                continue;
+
+            }
+
+            _zones.push(zones[i]);
+        }
+        
+        zones = _zones;
+        persist();
+
+    };
+
+    var getConfigFilePath = function(){
+        return configFilePath;
+    };
+
+    var getTplPath = function(){
+        return tplPath;
+    };
+
+    return {
+        reload: load,
+        setNameServer: setNameServer,
+        getNameServer: getNameServer,
+        getZones: getZones,
+        addZone: addZone,
+        removeZone: removeZone,
+        getConfigFilePath: getConfigFilePath,
+        getTplPath: getTplPath
+    };
+
+})();
+
+module.exports = config;
