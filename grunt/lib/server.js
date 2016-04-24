@@ -4,28 +4,9 @@ var Q = require('q');
 var fs = require('fs');
 var qexec = require('./qexec');
 var qfs = require('./qfs');
+var config = require('./config');
 
 module.exports = function (grunt) {
-
-    var config;
-
-    var path_to_tpls = '/var/docker-ddns/tpls/';
-
-    var loadConfig = function(){
-
-        var deferred = Q.defer();
-
-        qfs.readFile('/ddns/config.json')
-        .then(function(data){
-            deferred.resolve(new Config(data));
-        })
-        .fail(function(){
-            deferred.resolve(new Config());
-        })
-
-        return deferred.promise;
-
-    };
 
     var nameServer = 'ns.example.com';
     var ddnsDomain = 'dev.example.com';
@@ -145,7 +126,7 @@ module.exports = function (grunt) {
                 deferred.reject('could not read key')
             }
 
-            var keyTpl = fs.readFileSync(path_to_tpls + 'key',{encoding:'utf8'});
+            var keyTpl = fs.readFileSync(config.getTplPath() + 'key',{encoding:'utf8'});
 
             var keyPart = grunt.template.process(keyTpl, {data: {dnssec_key:key}});
 
@@ -164,17 +145,17 @@ module.exports = function (grunt) {
         return deferred.promise;
     };
 
-    var createZone = function(){
+    var createZone = function(nameServer, ddnsDomain){
 
         var data = {
             nameServer: nameServer,
             ddnsDomain: ddnsDomain
         };
 
-        var dbTpl = fs.readFileSync(path_to_tpls + 'db',{encoding:'utf8'});
+        var dbTpl = fs.readFileSync(config.getTplPath() + 'db',{encoding:'utf8'});
         var db = grunt.template.process(dbTpl, {data: data});
 
-        var zoneTpl = fs.readFileSync(path_to_tpls + 'zone',{encoding:'utf8'});
+        var zoneTpl = fs.readFileSync(config.getTplPath() + 'zone',{encoding:'utf8'});
         var zone = grunt.template.process(zoneTpl, {data: data});
 
         return Q.all([
@@ -183,16 +164,40 @@ module.exports = function (grunt) {
         ]);        
     };
 
+    var createZones = function(){
+
+        var nameServer = config.getNameServer();
+        var zones = config.getZones();
+
+        if(undefined === nameServer || 0 === zones.length){
+            var deferred = Q.defer();
+
+            deferred.reject();
+
+            return deferred.promise;
+        }
+
+        var promises = [];
+
+        for(var i = 0, x = zones.length; i < x; i += 1){
+            promises.push(createZone(nameServer, zones[i]));
+        }
+
+        return Q.all(promises);
+
+    };
+
     var firstSetup = function(){
 
         var deferred = Q.defer();
-
+        console.log('createKey');
         createKey()
         .then(function(){
+            console.log('backupConfLocal');            
             return backupConfLocal();
         })
-        
         .then(function(){
+            console.log('removeConfLocal');                        
             return removeConfLocal();
         })
         .fail(function(){
@@ -202,13 +207,21 @@ module.exports = function (grunt) {
         })
 
         .then(function(){
+            console.log('createConfLocal');                        
             return createConfLocal();
         })
 
         .then(function(){
-            deferred.resolve();
+            console.log('addKeyToConfLocal');                        
+            return addKeyToConfLocal()
         })
-        ;
+        .then(function(){
+            console.log('createZone');            
+            createZone()
+            .then(function(){
+                deferred.resolve();
+            })
+        });
 
         // backup /etc/bind/named.conf.local
 
@@ -244,6 +257,7 @@ module.exports = function (grunt) {
         backupConfLocal: backupConfLocal,
         addKeyToConfLocal: addKeyToConfLocal,
         createZone: createZone,
+        createZones: createZones,
         firstSetup: firstSetup
     };
 
