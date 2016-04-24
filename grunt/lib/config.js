@@ -21,12 +21,19 @@ var config = (function() {
         }
 
         var json = fs.readFileSync(configFilePath, {encoding: 'utf8'});
-
+        json = JSON.parse(json);
+        
         nameServer = json.nameServer;
         
+        if(json.zones === undefined){
+            json.zones = [];
+        }
         zones = json.zones;
 
-        tplPath = json.tplPath;    
+        if(json.zones === undefined){
+            json.zones = [];
+        }
+        tplPath = '/var/docker-ddns/tpls/';    
 
     };
     load();
