@@ -249,7 +249,6 @@ module.exports = function (grunt) {
     };
 
     return{
-        loadConfig: loadConfig,
         createKey:createKey,
         readKey:readKey,
         removeConfLocal: removeConfLocal,
