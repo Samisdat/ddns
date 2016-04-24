@@ -4,7 +4,8 @@ var Q = require('q');
 var fs = require('fs');
 var exec = require('child_process').exec;
 
-var qfs = require('./lib/qfs')();
+var qexec = require('./lib/qexec');
+var qfs = require('./lib/qfs');
 var server = require('./lib/server');
 
 //TODO Check and update fingerprint
@@ -87,7 +88,7 @@ var server = function(grunt){
 
         })
         .then(function () {
-            return execCmd('dnssec-keygen -K /ddns/key/ -a HMAC-MD5 -b 128 -r /dev/urandom -n USER DDNS_UPDATE', 'create key')
+            return qexec(grunt.log, 'dnssec-keygen -K /ddns/key/ -a HMAC-MD5 -b 128 -r /dev/urandom -n USER DDNS_UPDATE', 'create key')
         })
         .then(function () {
         	deferred.resolve();
@@ -493,6 +494,21 @@ module.exports = function (grunt) {
         var done = this.async();
 
         server(grunt).create_key()
+        .then(function(){
+            done();
+        })
+        .catch(function(){
+            grunt.log.error('something went wrong');
+            done(false);
+        });
+
+    });
+
+    grunt.registerTask('server:rewritten', 'help', function(args) {
+
+        var done = this.async();
+
+        server(grunt).firstSetup()
         .then(function(){
             done();
         })
