@@ -71,6 +71,21 @@ var config = (function() {
 
     };
 
+    var hasZone = function(zone){
+
+        var alreadyExists = false;
+
+        for(var i = 0, x = zones.length; i < x; i += 1){
+            if(zone === zones[i]){
+                alreadyExists = true;
+                break;
+            }
+        }
+
+        return alreadyExists;
+
+    };
+
     var addZone = function(zone){
 
         var alreadyExists = false;
@@ -125,6 +140,7 @@ var config = (function() {
         setNameServer: setNameServer,
         getNameServer: getNameServer,
         getZones: getZones,
+        hasZone: hasZone,
         addZone: addZone,
         removeZone: removeZone,
         getConfigFilePath: getConfigFilePath,
