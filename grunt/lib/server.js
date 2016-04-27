@@ -187,6 +187,29 @@ module.exports = function (grunt) {
 
     };
 
+    var enableLogging = function(){
+        
+        var deferred = Q.defer();
+        
+        var logConfig = fs.readFileSync(config.getTplPath() + 'logging', {encoding:'utf8'});
+        fs.appendFileSync('/etc/bind/named.conf.local', logConfig);
+
+        fs.mkdirSync('/var/log/named/');
+
+        qexec(grunt.log, 'chown bind:bind /var/log/named/', 'set correct rights for log file', 750, true)
+        .then(function (response) {
+
+            deferred.resolve();
+
+        }).fail(function(){
+
+            deferred.reject();
+
+        });
+
+        return deferred.promise;
+    };
+
     var firstSetup = function(){
 
         var deferred = Q.defer();
@@ -257,6 +280,7 @@ module.exports = function (grunt) {
         addKeyToConfLocal: addKeyToConfLocal,
         createZone: createZone,
         createZones: createZones,
+        enableLogging: enableLogging,
         firstSetup: firstSetup
     };
 
