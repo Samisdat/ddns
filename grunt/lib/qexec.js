@@ -1,12 +1,13 @@
 'use strict';
 
 var q = require('q');
-var exec = require('child_process').exec;
+var child_process = require('child_process');
 
 /**
  * Execute shell cmd via child_process
  */
 var promiseToExec = function(gruntLog, cmd, message, timeout, debug){
+    
     var deferred = q.defer();
 
     if(undefined === gruntLog){
@@ -41,13 +42,17 @@ var promiseToExec = function(gruntLog, cmd, message, timeout, debug){
         gruntLog.write(cmd);
     }
     
-    var child = exec(
+    console.log(child_process.exec)
+    console.log(cmd);
+    console.log(timeout);
+    
+    var child = child_process.exec(
         cmd,
         {
             timeout: timeout
         },
         function (error, stdout, stderr) {
-
+            console.log('callback', cmd, error, stdout, stderr)
             if(true === debug){
                 gruntLog.write('error', error);
                 gruntLog.write('stdout', stdout);
@@ -60,7 +65,9 @@ var promiseToExec = function(gruntLog, cmd, message, timeout, debug){
                 stderr: stderr
             };
 
+            console.log('child');
             if(null === error){
+                console.log('resolve');
                 deferred.resolve(response);
                 gruntLog.ok();
                 return;

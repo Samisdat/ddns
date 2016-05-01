@@ -15,7 +15,7 @@ module.exports = function (grunt) {
 
         var deferred = Q.defer();
 
-        qexec(grunt.log, 'mkdir -p /ddns/key', 'create dir for key')
+        qexec(grunt.log, 'mkdir -p /ddns/key', 'create dir for key', 750, true)
         .then(function () {
             return qexec(grunt.log, 'rm -f /ddns/key/Kddns_update*', 'delete key if already exists')
         })
@@ -210,8 +210,14 @@ module.exports = function (grunt) {
         return deferred.promise;
     };
 
-    var firstSetup = function(){
+    /* this is needed to make sure that *.jnl can be created */
+    var chownBindDir = function(){
+            
+        return qexec(grunt.log, 'chown bind:bind /etc/bind', 'let bind own it\'s dir', 750, true);
+    };
 
+    var firstSetup = function(nameServer, domains){
+        console.log('firstSetup', nameServer, domains);
         var deferred = Q.defer();
         console.log('createKey');
         createKey()
@@ -240,10 +246,20 @@ module.exports = function (grunt) {
         })
         .then(function(){
             console.log('createZone');            
-            createZone()
+            createZones(nameServer, domains)
             .then(function(){
                 deferred.resolve();
             })
+        })
+        .then(function(){
+            return enableLogging();
+        })
+        .then(function(){
+            return chownBindDir();
+        })
+        
+        .then(function(){
+            deferred.resolve();
         });
 
         // backup /etc/bind/named.conf.local
@@ -281,6 +297,7 @@ module.exports = function (grunt) {
         createZone: createZone,
         createZones: createZones,
         enableLogging: enableLogging,
+        chownBindDir: chownBindDir,
         firstSetup: firstSetup
     };
 
