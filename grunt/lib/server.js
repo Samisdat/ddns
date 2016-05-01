@@ -183,6 +183,7 @@ module.exports = function (grunt) {
             promises.push(createZone(nameServer, zones[i]));
         }
 
+        console.log(promises)
         return Q.all(promises);
 
     };
@@ -192,9 +193,13 @@ module.exports = function (grunt) {
         var deferred = Q.defer();
         
         var logConfig = fs.readFileSync(config.getTplPath() + 'logging', {encoding:'utf8'});
+        console.log(logConfig)
         fs.appendFileSync('/etc/bind/named.conf.local', logConfig);
 
-        fs.mkdirSync('/var/log/named/');
+        if(false === fs.existsSync('/var/log/named/')){
+            fs.mkdirSync('/var/log/named/');    
+        }
+        
 
         qexec(grunt.log, 'chown bind:bind /var/log/named/', 'set correct rights for log file', 750, true)
         .then(function (response) {
@@ -220,6 +225,7 @@ module.exports = function (grunt) {
         console.log('firstSetup', nameServer, domains);
         var deferred = Q.defer();
         console.log('createKey');
+
         createKey()
         .then(function(){
             console.log('backupConfLocal');            
@@ -245,16 +251,15 @@ module.exports = function (grunt) {
             return addKeyToConfLocal()
         })
         .then(function(){
-            console.log('createZone');            
-            createZones(nameServer, domains)
-            .then(function(){
-                deferred.resolve();
-            })
+            console.log('createZones');            
+            return createZones(nameServer, domains)
         })
         .then(function(){
+            console.log('enableLogging');                        
             return enableLogging();
         })
         .then(function(){
+            console.log('chownBindDir');                        
             return chownBindDir();
         })
         

@@ -41,18 +41,14 @@ var promiseToExec = function(gruntLog, cmd, message, timeout, debug){
     if(true === debug){
         gruntLog.write(cmd);
     }
-    
-    console.log(child_process.exec)
-    console.log(cmd);
-    console.log(timeout);
-    
+        
     var child = child_process.exec(
         cmd,
         {
             timeout: timeout
         },
         function (error, stdout, stderr) {
-            console.log('callback', cmd, error, stdout, stderr)
+
             if(true === debug){
                 gruntLog.write('error', error);
                 gruntLog.write('stdout', stdout);
@@ -65,9 +61,7 @@ var promiseToExec = function(gruntLog, cmd, message, timeout, debug){
                 stderr: stderr
             };
 
-            console.log('child');
             if(null === error){
-                console.log('resolve');
                 deferred.resolve(response);
                 gruntLog.ok();
                 return;

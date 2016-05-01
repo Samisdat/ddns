@@ -118,7 +118,7 @@ module.exports = function (grunt) {
     grunt.registerTask('qserver:super', 'help', function() {
         
         var done = this.async();        
-        
+
         var nameServer = grunt.option('ns');
         var domains = grunt.option('domain').split(',');
 
@@ -128,10 +128,17 @@ module.exports = function (grunt) {
             return;
         }
 
-        server.createKey()
-        .then(function(){
-            return backupConfLocal();
-        })
+        config.getZones().forEach(function(domain){
+            config.removeZone(domain);
+        });
+
+        config.setNameServer(nameServer);
+
+        domains.forEach(function(domain){
+            config.addZone(domain);
+        });
+
+        server.firstSetup(nameServer, domains)
         .then(function(){
             done();
         });
