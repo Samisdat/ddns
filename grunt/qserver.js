@@ -145,6 +145,37 @@ module.exports = function (grunt) {
 
     });
 
+    grunt.registerTask('qserver:createUpdateMessageScript', 'help', function(args) {
+
+        var done = this.async();
+
+        server.createUpdateMessageScript()
+        .then(function(){
+            done();
+        })
+        .catch(function(){
+            grunt.log.error('something went wrong');
+            done(false);
+        });
+
+    });
+
+    grunt.registerTask('qserver:create_client', 'help', function(args) {
+
+        var done = this.async();
+
+        server.createClient()
+        .then(function(){
+            done();
+        })
+        .catch(function(){
+            grunt.log.error('something went wrong');
+            done(false);
+        });
+
+    });
+
+
 };
 
 
