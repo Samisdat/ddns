@@ -17,12 +17,15 @@ module.exports = function (grunt) {
 
         qexec(grunt.log, 'mkdir -p /ddns/key', 'create dir for key', 750, true)
         .then(function () {
+            config.setKeyName(undefined);
+
             return qexec(grunt.log, 'rm -f /ddns/key/Kddns_update*', 'delete key if already exists')
         })
         .then(function () {
             return qexec(grunt.log, 'dnssec-keygen -K /ddns/key/ -a HMAC-MD5 -b 128 -r /dev/urandom -n USER DDNS_UPDATE', 'create key')
         })
-        .then(function () {
+        .then(function (response) {
+            config.setKeyName(response.stdout.trim());
             deferred.resolve();
         })
         .fail(function(){
