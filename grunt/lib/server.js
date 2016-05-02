@@ -348,6 +348,9 @@ module.exports = function (grunt) {
             return Q.all(promises);          
         })        
         .then(function(){
+            return qexec(grunt.log, 'chmod +x /ddns/client/create-update-message.sh', 'make update script executable', 750, true);
+        })
+        .then(function(){
             console.log('done')
             deferred.resolve();
         });
@@ -377,6 +380,9 @@ module.exports = function (grunt) {
         })
         .then(function () {
             return qexec(grunt.log, 'chmod +x /ddns/client/do-nsupdate.sh', 'make updatescript executable', 750, true);
+        })
+        .then(function () {
+            return createUpdateMessageScript();
         })
         .then(function () {
             deferred.resolve();
