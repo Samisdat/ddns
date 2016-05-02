@@ -9,6 +9,7 @@ var config = (function() {
     var nameServer;
     var zones = [];
 
+    var keyName = undefined;
     var tplPath = '/var/docker-ddns/tpls/';
 
     var load = function(){
@@ -16,6 +17,7 @@ var config = (function() {
         if(false === fs.existsSync(configFilePath)){
             nameServer = undefined;
             zones = [];
+            keyName = undefined;
             tplPath = '/var/docker-ddns/tpls/';            
             return;
         }
@@ -30,9 +32,12 @@ var config = (function() {
         }
         zones = json.zones;
 
-        if(json.zones === undefined){
-            json.zones = [];
+        if(json.keyName === undefined){
+            json.keyName = undefined;
         }
+
+        keyName = json.keyName;
+
         tplPath = '/var/docker-ddns/tpls/';    
 
     };
@@ -43,6 +48,7 @@ var config = (function() {
         var json = {};
         json.nameServer = nameServer;
         json.zones = zones;
+        json.keyName = keyName;
         json.tplPath = tplPath;
 
         json = JSON.stringify(json);
@@ -127,6 +133,20 @@ var config = (function() {
 
     };
 
+    var setKeyName = function(newKeyName){
+
+        keyName = newKeyName;
+        persist();
+
+    };
+
+    var getKeyName = function(){
+
+        return keyName;
+
+    };
+
+
     var getConfigFilePath = function(){
         return configFilePath;
     };
@@ -143,6 +163,8 @@ var config = (function() {
         hasZone: hasZone,
         addZone: addZone,
         removeZone: removeZone,
+        setKeyName: setKeyName,
+        getKeyName: getKeyName,
         getConfigFilePath: getConfigFilePath,
         getTplPath: getTplPath
     };
