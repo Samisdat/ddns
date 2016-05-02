@@ -224,6 +224,11 @@ module.exports = function (grunt) {
         return qexec(grunt.log, 'chown bind:bind /etc/bind', 'let bind own it\'s dir', 750, true);
     };
 
+    var restartBind = function(){
+            
+        return qexec(grunt.log, 'service bind9 restart', 'bind restart', 0, true);
+    };
+
     var firstSetup = function(nameServer, domains){
         console.log('firstSetup', nameServer, domains);
         var deferred = Q.defer();
@@ -265,7 +270,10 @@ module.exports = function (grunt) {
             console.log('chownBindDir');                        
             return chownBindDir();
         })
-        
+        .then(function(){
+            console.log('restartBind');                        
+            return restartBind();
+        })        
         .then(function(){
             deferred.resolve();
         });
