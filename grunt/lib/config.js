@@ -10,6 +10,7 @@ var config = (function() {
     var zones = [];
 
     var keyName = undefined;
+
     var tplPath = '/var/docker-ddns/tpls/';
 
     var load = function(){
