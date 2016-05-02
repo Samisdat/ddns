@@ -147,6 +147,25 @@ var fs = require('fs');
 
     };
 
+    var copyFile = function(source, destination){
+
+        var deferred = q.defer();
+
+        readFile(source)
+        .then(function(content){
+            return writeFile(destination, content)
+        })
+        .then(function(){
+            deferred.resolve();
+        })
+        .catch(function(){
+            deferred.reject();
+        });
+
+        return deferred.promise;
+
+    };
+
     var appendFile = function(file, data){
 
         var deferred = q.defer();
@@ -193,6 +212,7 @@ var fs = require('fs');
         unlink: unlink,
         readFile: readFile,
         writeFile: writeFile,
+        copyFile: copyFile,
         appendFile: appendFile,
         rename: rename
     };
