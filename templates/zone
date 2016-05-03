@@ -1,5 +1,0 @@
-zone "DYNAMIC_DOMAIN" {
-	type master;
-	file "/etc/bind/db.DYNAMIC_DOMAIN";
-	allow-update { key "DDNS_UPDATE"; };
-};

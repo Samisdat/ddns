@@ -8,7 +8,7 @@ module.exports = function (grunt) {
 
     var server = require('./lib/server')(grunt);
 
-    grunt.registerTask('qserver:create_key', 'help', function(args) {
+    grunt.registerTask('server:create_key', 'create key', function(args) {
 
         var done = this.async();
 
@@ -23,7 +23,7 @@ module.exports = function (grunt) {
 
     });
 
-    grunt.registerTask('qserver:add_key', 'help', function(args) {
+    grunt.registerTask('server:add_key', 'add key to local config', function(args) {
 
         var done = this.async();
 
@@ -38,23 +38,7 @@ module.exports = function (grunt) {
 
     });
 
-    grunt.registerTask('qserver:setup', 'help', function(args) {
-    
-        var done = this.async();
-
-        server.firstSetup()
-        .then(function(){
-            done();
-        })
-        .catch(function(){
-            grunt.log.error('something went wrong');
-            done(false);
-        });
-
-
-    });
-
-    grunt.registerTask('qserver:nameserver', 'help', function() {
+    grunt.registerTask('server:nameserver', 'set nameserver', function() {
             
         var done = this.async();
 
@@ -70,29 +54,7 @@ module.exports = function (grunt) {
 
     });
 
-    grunt.registerTask('qserver:logging', 'help', function() {
-            
-        var done = this.async();
-
-        server.enableLogging()
-        .then(function(){
-            done();
-        });
-
-    });    
-
-    grunt.registerTask('qserver:chown', 'help', function() {
-            
-        var done = this.async();
-
-        server.chownBindDir()
-        .then(function(){
-            done();
-        });
-
-    });
-
-    grunt.registerTask('qserver:domain', 'help', function() {
+    grunt.registerTask('server:domain', 'add/remove zone', function() {
             
         var done = this.async();
 
@@ -115,7 +77,7 @@ module.exports = function (grunt) {
 
     });
 
-    grunt.registerTask('qserver:super', 'help', function() {
+    grunt.registerTask('server:init', "complete first setup", function() {
         
         var done = this.async();        
 
@@ -144,37 +106,6 @@ module.exports = function (grunt) {
         });
 
     });
-
-    grunt.registerTask('qserver:createUpdateMessageScript', 'help', function(args) {
-
-        var done = this.async();
-
-        server.createUpdateMessageScript()
-        .then(function(){
-            done();
-        })
-        .catch(function(){
-            grunt.log.error('something went wrong');
-            done(false);
-        });
-
-    });
-
-    grunt.registerTask('qserver:create_client', 'help', function(args) {
-
-        var done = this.async();
-
-        server.createClient()
-        .then(function(){
-            done();
-        })
-        .catch(function(){
-            grunt.log.error('something went wrong');
-            done(false);
-        });
-
-    });
-
 
 };
 
