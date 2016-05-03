@@ -1,5 +1,10 @@
 'use strict';
 
+/*
+cmd to get ip from local dns
+dig @localhost dev.foo.org +short
+*/
+
 var expect = require('chai').expect;
 
 var util = require('util');
