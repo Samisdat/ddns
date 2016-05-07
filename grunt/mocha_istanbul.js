@@ -7,6 +7,7 @@ var mochaIstanbul = {
             'test/lib/qexec.js',
             'test/lib/qfs.js',
             'test/lib/config.js',
+            'test/lib/client.js',
             'test/lib/server.js'
         ]
     },
@@ -23,6 +24,11 @@ var mochaIstanbul = {
     config: {
         src: [
             'test/lib/config.js'
+        ]
+    },
+    client: {
+        src: [
+            'test/lib/client.js'
         ]
     }
 };

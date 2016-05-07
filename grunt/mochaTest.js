@@ -7,10 +7,11 @@ var mocha = {
     },
     all:{
         src: [    
-            'test/lib/rmdir.js',
+            'test/lib/client.js',
+            'test/lib/config.js',
             'test/lib/qexec.js',
             'test/lib/qfs.js',
-            'test/lib/config.js',
+            'test/lib/rmdir.js',
             'test/lib/server.js'
         ]        
     },
@@ -27,6 +28,21 @@ var mocha = {
     config:{
         src: [    
             'test/lib/config.js'
+        ]        
+    },
+    qfs:{
+        src: [    
+            'test/lib/qfs.js'
+        ]        
+    },
+    qexec:{
+        src: [    
+            'test/lib/qexec.js'
+        ]        
+    },
+    client:{
+        src: [    
+            'test/lib/client.js'
         ]        
     }
 };
