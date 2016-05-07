@@ -336,6 +336,62 @@ describe('promise filesystem ', function() {
 
     });
 
+    describe('method qfs.copyFile', function() {
+
+        it('succeeded copy a file', function(done) {
+
+            var exist = fs.existsSync('/vfs-test/copied-file.txt');
+            expect(exist).to.be.false;
+
+            qfs.writeFile('/vfs-test/new-file.txt', 'some data')
+            .then(function(){
+
+                return qfs.copyFile(
+                    '/vfs-test/new-file.txt',
+                    '/vfs-test/copied-file.txt'
+                );
+
+            })
+            .then(function(){
+
+                qfs.readFile('/vfs-test/copied-file.txt').then(function(data){
+
+                    if ('some data' !== data){
+                        done(new Error('read wrong content'));
+                        return;
+                    }
+                    done();
+                });
+
+            })
+            .fail(function(){
+                done(new Error('File not written'));
+            });
+
+        });
+
+        it('fails for some reason', function(done) {
+            
+            notFs.setForce('writeFile', function(){
+                return 'MOCK';
+            });
+
+            var promise = qfs.copyFile(
+                '/vfs-test/message.txt',
+                '/vfs-test/copied-file.txt'
+            );
+            promise.then(function(){
+                done(new Error('file exists'));
+            });
+
+            promise.fail(function(){
+                done();
+            });                
+
+        });
+
+    });
+
     describe('method qfs.appendFile', function() {
 
         it('succeeded appending to a file', function(done) {

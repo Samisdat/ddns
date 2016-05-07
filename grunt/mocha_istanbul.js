@@ -30,6 +30,11 @@ var mochaIstanbul = {
         src: [
             'test/lib/client.js'
         ]
+    },
+    qfs: {
+        src: [
+            'test/lib/qfs.js'
+        ]
     }
 };
 
