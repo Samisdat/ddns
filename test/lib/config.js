@@ -68,6 +68,30 @@ describe('config ', function() {
 
     });
 
+    it('set/get keyName', function() {
+
+        config.reload();
+
+        var exist = fs.existsSync(config.getConfigFilePath());
+        expect(exist).to.be.false;
+
+        expect(config.getKeyName()).to.be.undefined;
+
+        //set
+        config.setKeyName('abcd');
+        expect(config.getKeyName()).to.be.equal('abcd');
+
+        // after set the config data should be persisted
+        exist = fs.existsSync(config.getConfigFilePath());
+        expect(exist).to.be.true;
+
+        var configJson = fs.readFileSync(config.getConfigFilePath(), {encoding: 'utf8'});
+        configJson = JSON.parse(configJson);
+
+        expect(configJson.keyName).to.be.equal('abcd');
+
+    });
+
     it('can get/add and remove zone', function() {
 
         config.reload();
@@ -78,20 +102,26 @@ describe('config ', function() {
         expect(config.getZones()).to.deep.equal([]);
 
         //add
+        expect(config.hasZone('dev.example.com')).to.be.false;
         config.addZone('dev.example.com');
         expect(config.getZones()).to.deep.equal(['dev.example.com']);
+        expect(config.hasZone('dev.example.com')).to.be.true;
 
         // add duplicate
         config.addZone('dev.example.com');
         expect(config.getZones()).to.deep.equal(['dev.example.com']);
 
         // add second zone
+        expect(config.hasZone('dev.example.org')).to.be.false;        
         config.addZone('dev.example.org');
         expect(config.getZones()).to.deep.equal(['dev.example.com', 'dev.example.org']);
+        expect(config.hasZone('dev.example.org')).to.be.true;        
 
         // remove first one
         config.removeZone('dev.example.com');
         expect(config.getZones()).to.deep.equal(['dev.example.org']);
+        expect(config.hasZone('dev.example.com')).to.be.false;
+
 
         var configJson = fs.readFileSync(config.getConfigFilePath(), {encoding: 'utf8'});
         configJson = JSON.parse(configJson);
@@ -103,28 +133,44 @@ describe('config ', function() {
 
     it('can deserialised config from file', function() {
 
-        config.reload();
 
         var json = {};
         json.nameServer = 'ns.example.org';
         json.zones = ['dev.example.org'];
+        json.keyName = 'akeyname';        
         json.tplPath = '/var/docker-ddns/tpls/';
 
         json = JSON.stringify(json);
 
         fs.writeFileSync(config.getConfigFilePath(), json, {encoding: 'utf8'});
 
-        expect(config.getNameServer()).to.be.undefined;
-        expect(config.getZones()).to.deep.equal([]);
-        expect(config.getTplPath()).to.be.equal('/var/docker-ddns/tpls/');
-
         config.reload();
 
         expect(config.getNameServer()).to.be.equal('ns.example.org');
         expect(config.getZones()).to.deep.equal(['dev.example.org']);
+        expect(config.getKeyName()).to.be.equal('akeyname');
+        expect(config.getTplPath()).to.be.equal('/var/docker-ddns/tpls/');
+
+    });
+
+    it('can deserialised config from incomplete file', function() {
+
+
+        var json = {};
+        json.nameServer = 'ns.example.org';
+        json.tplPath = '/var/docker-ddns/tpls/';
+
+        json = JSON.stringify(json);
+
+        fs.writeFileSync(config.getConfigFilePath(), json, {encoding: 'utf8'});
+        config.reload();
+
+        expect(config.getNameServer()).to.be.equal('ns.example.org');
+        expect(config.getZones()).to.deep.equal([]);
         expect(config.getTplPath()).to.be.equal('/var/docker-ddns/tpls/');
 
 
     });
+
 
 });
