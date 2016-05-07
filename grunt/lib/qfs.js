@@ -8,72 +8,72 @@ var fs = require('fs');
     /**
      * fs.exists is deprecated but fs.stat is not usable with memfs
      */
-    var fileExists = function(fileName){
-        
-        var deferred = q.defer();
+var fileExists = function(fileName){
 
-        if ( true !== _.isString(fileName)){
+    var deferred = q.defer();
 
-            deferred.reject();
+    if ( true !== _.isString(fileName)){
 
-        }
-        else {
+        deferred.reject();
 
-            fs.exists(fileName, function(exists){
+    }
+    else {
 
-                if (false === exists){
-                    deferred.reject();
-                }
-                else {
-                    deferred.resolve();
-                }
+        fs.exists(fileName, function(exists){
 
-            });
-        
-        }
-
-        return deferred.promise;
-    };
-
-    var unlink = function(path){
-        var deferred = q.defer();
-
-        if (true !== _.isString(path)){
-
-            deferred.reject();
-
-        }
-        else {
-
-            var exists = fileExists(path)
-            .then(function(){
-
-                fs.unlink(path, function(error){
-
-                    if (null !== error){
-                        deferred.reject();
-                        return;
-                    }
-
-                    deferred.resolve();
-
-                });
-
-            })
-            .fail(function(){
+            if (false === exists){
                 deferred.reject();
+            }
+            else {
+                deferred.resolve();
+            }
+
+        });
+
+    }
+
+    return deferred.promise;
+};
+
+var unlink = function(path){
+    var deferred = q.defer();
+
+    if (true !== _.isString(path)){
+
+        deferred.reject();
+
+    }
+    else {
+
+        fileExists(path)
+        .then(function(){
+
+            fs.unlink(path, function(error){
+
+                if (null !== error){
+                    deferred.reject();
+                    return;
+                }
+
+                deferred.resolve();
+
             });
 
-        }
+        })
+        .fail(function(){
+            deferred.reject();
+        });
 
-        return deferred.promise;
-    };
+    }
 
-    var readFile = function(file){
+    return deferred.promise;
+};
 
-        var deferred = q.defer();
+var readFile = function(file){
 
-        fs.readFile(
+    var deferred = q.defer();
+
+    fs.readFile(
             file,
             {encoding: 'utf8'},
             function(err, data){
@@ -86,15 +86,15 @@ var fs = require('fs');
             }
         );
 
-        return deferred.promise;
+    return deferred.promise;
 
-    };
+};
 
-    var mkdir = function(path){
+var mkdir = function(path){
 
-        var deferred = q.defer();
+    var deferred = q.defer();
 
-        fs.mkdir(
+    fs.mkdir(
             path,
             function(err){
                 if (err){
@@ -105,14 +105,14 @@ var fs = require('fs');
             }
         );
 
-        return deferred.promise;
+    return deferred.promise;
 
-    };
+};
 
-    var readdir = function(path){
-        var deferred = q.defer();
+var readdir = function(path){
+    var deferred = q.defer();
 
-        fs.readdir(
+    fs.readdir(
             path,
             function(err, files){
                 if (err){
@@ -123,14 +123,14 @@ var fs = require('fs');
             }
         );
 
-        return deferred.promise;
-    };
+    return deferred.promise;
+};
 
-    var writeFile = function(file, data){
+var writeFile = function(file, data){
 
-        var deferred = q.defer();
+    var deferred = q.defer();
 
-        fs.writeFile(
+    fs.writeFile(
             file,
             data,
             {encoding: 'utf8'},
@@ -143,17 +143,17 @@ var fs = require('fs');
             }
         );
 
-        return deferred.promise;
+    return deferred.promise;
 
-    };
+};
 
-    var copyFile = function(source, destination){
+var copyFile = function(source, destination){
 
-        var deferred = q.defer();
+    var deferred = q.defer();
 
-        readFile(source)
+    readFile(source)
         .then(function(content){
-            return writeFile(destination, content)
+            return writeFile(destination, content);
         })
         .then(function(){
             deferred.resolve();
@@ -162,15 +162,15 @@ var fs = require('fs');
             deferred.reject();
         });
 
-        return deferred.promise;
+    return deferred.promise;
 
-    };
+};
 
-    var appendFile = function(file, data){
+var appendFile = function(file, data){
 
-        var deferred = q.defer();
+    var deferred = q.defer();
 
-        fs.appendFile(
+    fs.appendFile(
             file,
             data,
             {encoding: 'utf8'},
@@ -183,14 +183,14 @@ var fs = require('fs');
             }
         );
 
-        return deferred.promise;
+    return deferred.promise;
 
-    };
+};
 
-    var rename = function(oldPath, newPath){
-        var deferred = q.defer();
+var rename = function(oldPath, newPath){
+    var deferred = q.defer();
 
-        fs.rename(
+    fs.rename(
             oldPath,
             newPath,
             function(err){
@@ -202,18 +202,18 @@ var fs = require('fs');
             }
         );
 
-        return deferred.promise;
-    };
+    return deferred.promise;
+};
 
-    module.exports = {
-        mkdir: mkdir,
-        readdir: readdir,
-        fileExists: fileExists,
-        unlink: unlink,
-        readFile: readFile,
-        writeFile: writeFile,
-        copyFile: copyFile,
-        appendFile: appendFile,
-        rename: rename
-    };
+module.exports = {
+    mkdir: mkdir,
+    readdir: readdir,
+    fileExists: fileExists,
+    unlink: unlink,
+    readFile: readFile,
+    writeFile: writeFile,
+    copyFile: copyFile,
+    appendFile: appendFile,
+    rename: rename
+};
 

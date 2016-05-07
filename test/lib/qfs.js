@@ -5,43 +5,24 @@ var expect = require('chai').expect;
 var q = require('q');
 var fs = require('fs');
 var notFs = require('not-fs');
-var path = require('path');
 
 var qfs = require('../../grunt/lib/qfs');
 
-var rmdir = function(dir) {
-    var list = fs.readdirSync(dir);
+var rmdir = require('../../grunt/lib/rmdir');
 
-    for(var i = 0; i < list.length; i++) {
-        var filename = path.join(dir, list[i]);
-        var stat = fs.statSync(filename);
-        
-        if(filename == "." || filename == "..") {
-            // pass these files
-        } else if(stat.isDirectory()) {
-            // rmdir recursively
-            rmdir(filename);
-        } else {
-            // rm fiilename
-            fs.unlinkSync(filename);
-        }
-    }
-    fs.rmdirSync(dir);
-
-};
 describe('promise filesystem ', function() {
 
     before(function(){
-        notFs.swapIn(); 
+        notFs.swapIn();
     });
 
     after(function(){
-        notFs.swapOut(); 
+        notFs.swapOut();
     });
 
     beforeEach(function() {
 
-        if(true === fs.existsSync('/vfs-test/')){
+        if (true === fs.existsSync('/vfs-test/')){
             rmdir('/vfs-test/');
         }
 
@@ -117,16 +98,16 @@ describe('promise filesystem ', function() {
 
         it('create a dir', function(done) {
 
-            var exist = fs.existsSync('/vfs-test/foobar');
-            expect(exist).to.be.false;
+            var existBefore = fs.existsSync('/vfs-test/foobar');
+            expect(existBefore).to.be.false;
 
             expect(qfs.mkdir).to.be.instanceof(Function);
 
             qfs.mkdir('/vfs-test/foobar')
             .then(function(){
 
-                var exist = fs.existsSync('/vfs-test/foobar');
-                expect(exist).to.be.true;
+                var existAfter = fs.existsSync('/vfs-test/foobar');
+                expect(existAfter).to.be.true;
                 done();
 
             });
@@ -135,7 +116,7 @@ describe('promise filesystem ', function() {
 
         it('fails on creating a dir', function(done) {
 
-            notFs.setForce('mkdir', function(notFs){
+            notFs.setForce('mkdir', function(){
                 return 'MOCK';
             });
 
@@ -236,8 +217,8 @@ describe('promise filesystem ', function() {
         });
 
         it('fails when failing to unlink existing file', function(done) {
-                
-            notFs.setForce('unlink', function(notFs){
+
+            notFs.setForce('unlink', function(){
                 return 'MOCK';
             });
 
@@ -338,7 +319,7 @@ describe('promise filesystem ', function() {
 
         it('fails for some reason', function(done) {
 
-            notFs.setForce('writeFile', function(notFs){
+            notFs.setForce('writeFile', function(){
                 return 'MOCK';
             });
 
@@ -380,8 +361,8 @@ describe('promise filesystem ', function() {
         });
 
         it('fails for some reason', function(done) {
-                
-            notFs.setForce('appendFile', function(notFs){
+
+            notFs.setForce('appendFile', function(){
                 return 'MOCK';
             });
 
@@ -394,7 +375,7 @@ describe('promise filesystem ', function() {
                 done();
             });
 
-        });        
+        });
 
     });
 
@@ -421,7 +402,7 @@ describe('promise filesystem ', function() {
 
         it('fails for some reason', function(done) {
 
-            notFs.setForce('rename', function(notFs){
+            notFs.setForce('rename', function(){
                 return 'MOCK';
             });
 
@@ -434,7 +415,7 @@ describe('promise filesystem ', function() {
                 done();
             });
 
-        });                
+        });
 
     });
 

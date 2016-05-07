@@ -9,37 +9,37 @@ var config = (function() {
     var nameServer;
     var zones = [];
 
-    var keyName = undefined;
+    var keyName;
 
     var tplPath = '/var/docker-ddns/tpls/';
 
     var load = function(){
 
-        if(false === fs.existsSync(configFilePath)){
+        if (false === fs.existsSync(configFilePath)){
             nameServer = undefined;
             zones = [];
             keyName = undefined;
-            tplPath = '/var/docker-ddns/tpls/';            
+            tplPath = '/var/docker-ddns/tpls/';
             return;
         }
 
         var json = fs.readFileSync(configFilePath, {encoding: 'utf8'});
         json = JSON.parse(json);
-        
+
         nameServer = json.nameServer;
-        
-        if(json.zones === undefined){
+
+        if (json.zones === undefined){
             json.zones = [];
         }
         zones = json.zones;
 
-        if(json.keyName === undefined){
+        if (json.keyName === undefined){
             json.keyName = undefined;
         }
 
         keyName = json.keyName;
 
-        tplPath = '/var/docker-ddns/tpls/';    
+        tplPath = '/var/docker-ddns/tpls/';
 
     };
     load();
@@ -53,7 +53,7 @@ var config = (function() {
         json.tplPath = tplPath;
 
         json = JSON.stringify(json);
-        fs.writeFileSync(configFilePath, json,  {encoding: 'utf8'});
+        fs.writeFileSync(configFilePath, json, {encoding: 'utf8'});
 
     };
 
@@ -82,8 +82,8 @@ var config = (function() {
 
         var alreadyExists = false;
 
-        for(var i = 0, x = zones.length; i < x; i += 1){
-            if(zone === zones[i]){
+        for (var i = 0, x = zones.length; i < x; i += 1){
+            if (zone === zones[i]){
                 alreadyExists = true;
                 break;
             }
@@ -97,17 +97,17 @@ var config = (function() {
 
         var alreadyExists = false;
 
-        for(var i = 0, x = zones.length; i < x; i += 1){
-            if(zone === zones[i]){
+        for (var i = 0, x = zones.length; i < x; i += 1){
+            if (zone === zones[i]){
                 alreadyExists = true;
                 break;
             }
         }
 
-        if(true === alreadyExists){
+        if (true === alreadyExists){
             return;
         }
-        
+
         zones.push(zone);
 
         persist();
@@ -116,20 +116,20 @@ var config = (function() {
 
     var removeZone = function(zone){
 
-        var _zones = [];
+        var purgedZones = [];
 
-        for(var i = 0, x = zones.length; i < x; i += 1){
+        for (var i = 0, x = zones.length; i < x; i += 1){
 
-            if(zone === zones[i]){
-                
+            if (zone === zones[i]){
+
                 continue;
 
             }
 
-            _zones.push(zones[i]);
+            purgedZones.push(zones[i]);
         }
-        
-        zones = _zones;
+
+        zones = purgedZones;
         persist();
 
     };

@@ -2,7 +2,6 @@
 
 var expect = require('chai').expect;
 
-var q = require('q');
 var fs = require('fs');
 var notFs = require('not-fs');
 var rmdir = require('../../grunt/lib/rmdir');
@@ -12,21 +11,21 @@ var config = require('../../grunt/lib/config');
 describe('config ', function() {
 
     before(function(){
-        notFs.swapIn(); 
+        notFs.swapIn();
     });
 
     after(function(){
-        notFs.swapOut(); 
+        notFs.swapOut();
     });
 
     beforeEach(function() {
 
-        if(true === fs.existsSync('/ddns/')){
+        if (true === fs.existsSync('/ddns/')){
             rmdir('/ddns/');
         }
 
         fs.mkdirSync('/ddns/');
-        
+
     });
 
     it('can be created', function() {
@@ -51,15 +50,15 @@ describe('config ', function() {
         expect(config.getNameServer()).to.be.undefined;
 
         //set
-        config.setNameServer('ns.example.com');        
+        config.setNameServer('ns.example.com');
         expect(config.getNameServer()).to.be.equal('ns.example.com');
-        
+
         // after set the config data should be persisted
         exist = fs.existsSync(config.getConfigFilePath());
         expect(exist).to.be.true;
 
         //set
-        config.setNameServer('ns.example.org');        
+        config.setNameServer('ns.example.org');
         expect(config.getNameServer()).to.be.equal('ns.example.org');
 
         var configJson = fs.readFileSync(config.getConfigFilePath(), {encoding: 'utf8'});
@@ -67,7 +66,7 @@ describe('config ', function() {
 
         expect(configJson.nameServer).to.be.equal('ns.example.org');
 
-    });    
+    });
 
     it('can get/add and remove zone', function() {
 
@@ -79,19 +78,19 @@ describe('config ', function() {
         expect(config.getZones()).to.deep.equal([]);
 
         //add
-        config.addZone('dev.example.com');        
+        config.addZone('dev.example.com');
         expect(config.getZones()).to.deep.equal(['dev.example.com']);
 
         // add duplicate
-        config.addZone('dev.example.com');        
+        config.addZone('dev.example.com');
         expect(config.getZones()).to.deep.equal(['dev.example.com']);
 
         // add second zone
-        config.addZone('dev.example.org');        
+        config.addZone('dev.example.org');
         expect(config.getZones()).to.deep.equal(['dev.example.com', 'dev.example.org']);
 
         // remove first one
-        config.removeZone('dev.example.com');        
+        config.removeZone('dev.example.com');
         expect(config.getZones()).to.deep.equal(['dev.example.org']);
 
         var configJson = fs.readFileSync(config.getConfigFilePath(), {encoding: 'utf8'});
@@ -103,7 +102,7 @@ describe('config ', function() {
     });
 
     it('can deserialised config from file', function() {
-        
+
         config.reload();
 
         var json = {};
@@ -113,7 +112,7 @@ describe('config ', function() {
 
         json = JSON.stringify(json);
 
-        fs.writeFileSync(config.getConfigFilePath(), json,  {encoding: 'utf8'});
+        fs.writeFileSync(config.getConfigFilePath(), json, {encoding: 'utf8'});
 
         expect(config.getNameServer()).to.be.undefined;
         expect(config.getZones()).to.deep.equal([]);

@@ -1,17 +1,19 @@
+'use strict';
+
 var fs = require('fs');
 var path = require('path');
 
 var rmdirSync = function(dir) {
 
     var list = fs.readdirSync(dir);
-    for(var i = 0, x = list.length; i < x; i++) {
+    for (var i = 0, x = list.length; i < x; i++) {
 
         var filename = path.join(dir, list[i]);
 
         var stat = fs.statSync(filename);
-        
-        if(stat.isDirectory()) {
-            
+
+        if (stat.isDirectory()) {
+
             rmdirSync(filename);
 
         } else {
@@ -25,4 +27,4 @@ var rmdirSync = function(dir) {
 
 };
 
-module.exports = rmdirSync
+module.exports = rmdirSync;

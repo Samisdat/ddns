@@ -1,55 +1,55 @@
 'use strict';
 
 var q = require('q');
-var child_process = require('child_process');
+var exec = require('child_process').exec;
 
 /**
  * Execute shell cmd via child_process
  */
 var promiseToExec = function(gruntLog, cmd, message, timeout, debug){
-    
+
     var deferred = q.defer();
 
-    if(undefined === gruntLog){
+    if (undefined === gruntLog){
         gruntLog = {};
     }
 
-    if(undefined === gruntLog.write){
+    if (undefined === gruntLog.write){
         gruntLog.write = function(){};
     }
-    if(undefined === gruntLog.ok){
+    if (undefined === gruntLog.ok){
         gruntLog.ok = function(){};
     }
-    if(undefined === gruntLog.error){
+    if (undefined === gruntLog.error){
         gruntLog.error = function(){};
     }
 
-    if(undefined === message){
+    if (undefined === message){
         message = cmd;
     }
 
-    if(undefined === timeout){
+    if (undefined === timeout){
         timeout = 0;
     }
 
-    if(undefined === debug){
+    if (undefined === debug){
         debug = false;
     }
 
     gruntLog.write(message + '... ');
 
-    if(true === debug){
+    if (true === debug){
         gruntLog.write(cmd);
     }
-        
-    var child = child_process.exec(
+
+    exec(
         cmd,
         {
             timeout: timeout
         },
         function (error, stdout, stderr) {
 
-            if(true === debug){
+            if (true === debug){
                 gruntLog.write('error', error);
                 gruntLog.write('stdout', stdout);
                 gruntLog.write('stderr', stderr);
@@ -61,7 +61,7 @@ var promiseToExec = function(gruntLog, cmd, message, timeout, debug){
                 stderr: stderr
             };
 
-            if(null === error){
+            if (null === error){
                 deferred.resolve(response);
                 gruntLog.ok();
                 return;
@@ -78,4 +78,4 @@ var promiseToExec = function(gruntLog, cmd, message, timeout, debug){
     return deferred.promise;
 };
 
-module.exports = promiseToExec
+module.exports = promiseToExec;

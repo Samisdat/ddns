@@ -54,10 +54,10 @@ describe('promise exec ', function() {
     it('fail on unkown cmd', function(done) {
 
         qexec(undefined, 'unkown_cmd', 'just an echo', 100, true)
-        .then(function(response){
+        .then(function(){
             done(new Error(''));
         })
-        .fail(function(response){
+        .fail(function(){
             done();
         });
 

@@ -14,30 +14,30 @@ module.exports = function (grunt) {
 
         qfs.fileExists('/ddns/client/create-update-message.sh')
         .then(function(){
-            console.log('delete');  
-            return qfs.unlink('/ddns/client/create-update-message.sh')
+            console.log('delete');
+            return qfs.unlink('/ddns/client/create-update-message.sh');
         })
         .catch(function(){
-            console.log('not existed')  
+            console.log('not existed');
             return q.resolve();
         })
         .then(function(){
 
             return qfs.copyFile(
-                config.getTplPath() + 'update-message',  
+                config.getTplPath() + 'update-message',
                 '/ddns/client/create-update-message.sh'
             );
         })
         .then(function(){
             var promises = [];
 
-            var zoneTpl = fs.readFileSync(config.getTplPath() + 'update-message-zone',{encoding:'utf8'});
+            var zoneTpl = fs.readFileSync(config.getTplPath() + 'update-message-zone', {encoding: 'utf8'});
 
             config.getZones().forEach(function(zone){
                 var zoneMsg = grunt.template.process(
-                    zoneTpl, 
+                    zoneTpl,
                     {
-                        data:{
+                        data: {
                             nameServer: nameServer,
                             ddnsDomain: zone
                         }
@@ -50,13 +50,13 @@ module.exports = function (grunt) {
                     )
                 );
             });
-            return q.all(promises);          
-        })        
+            return q.all(promises);
+        })
         .then(function(){
             return qexec(grunt.log, 'chmod +x /ddns/client/create-update-message.sh', 'make update script executable', 750, true);
         })
         .then(function(){
-            console.log('done')
+            console.log('done');
             deferred.resolve();
         });
 
@@ -70,18 +70,18 @@ module.exports = function (grunt) {
         qexec(grunt.log, 'mkdir -p /ddns/client', 'create dir for client', 0, true)
         .then(function () {
             return qfs.copyFile(
-                '/ddns/key/' + config.getKeyName() + '.private',  
+                '/ddns/key/' + config.getKeyName() + '.private',
                 '/ddns/client/ddns-key.private'
             );
         })
         .then(function () {
             return qfs.copyFile(
-                '/ddns/key/' + config.getKeyName() + '.key',  
+                '/ddns/key/' + config.getKeyName() + '.key',
                 '/ddns/client/ddns-key.key'
             );
         })
         .then(function () {
-            return qfs.copyFile(config.getTplPath() + 'do-nsupdate',  '/ddns/client/do-nsupdate.sh');
+            return qfs.copyFile(config.getTplPath() + 'do-nsupdate', '/ddns/client/do-nsupdate.sh');
         })
         .then(function () {
             return qexec(grunt.log, 'chmod +x /ddns/client/do-nsupdate.sh', 'make updatescript executable', 750, true);
@@ -91,13 +91,13 @@ module.exports = function (grunt) {
         })
         .then(function () {
             deferred.resolve();
-        })
+        });
 
         return deferred.promise;
 
     };
 
-    return{
+    return {
         createUpdateMessageScript: createUpdateMessageScript,
         createClient: createClient
     };

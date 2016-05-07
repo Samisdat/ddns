@@ -7,7 +7,6 @@ dig @localhost dev.foo.org +short
 
 var expect = require('chai').expect;
 
-var util = require('util');
 var q = require('q');
 var fs = require('fs');
 
@@ -20,31 +19,31 @@ var notFs = require('not-fs');
 describe('testing in real file sys', function() {
 
     beforeEach(function() {
-        if(true === fs.existsSync('/ddns/key')){
+        if (true === fs.existsSync('/ddns/key')){
             rmdir('/ddns/key/');
         }
     });
 
     it('createkey', function(done) {
-        
+
         var dirExists = fs.existsSync('/ddns/key');
         expect(dirExists).to.be.false;
 
         server.createKey()
         .then(function(){
 
-            var dirExists = fs.existsSync('/ddns/key');
+            dirExists = fs.existsSync('/ddns/key');
             expect(dirExists).to.be.true;
 
             server.readKey()
-            .then(function(key){
+            .then(function(){
                 done();
-            })
-            
+            });
+
         });
 
     });
-    
+
 });
 
 describe('integration test', function() {
@@ -52,15 +51,15 @@ describe('integration test', function() {
     before(function() {
         notFs.swapIn();
     });
-    
+
     after(function() {
         notFs.swapOut();
     });
 
     describe('method server.removeConfLocal and server.createConfLocal', function() {
-    
+
         beforeEach(function() {
-            if(true === fs.existsSync('/etc/bind/')){
+            if (true === fs.existsSync('/etc/bind/')){
                 rmdir('/etc/bind/');
             }
 
@@ -77,7 +76,7 @@ describe('integration test', function() {
             server.removeConfLocal()
             .then(function(){
 
-                var exists = fs.existsSync('/etc/bind/named.conf.local');
+                exists = fs.existsSync('/etc/bind/named.conf.local');
                 expect(exists).to.be.false;
 
                 done();
@@ -98,7 +97,7 @@ describe('integration test', function() {
             server.createConfLocal()
             .then(function(){
 
-                var exists = fs.existsSync('/etc/bind/named.conf.local');
+                exists = fs.existsSync('/etc/bind/named.conf.local');
                 expect(exists).to.be.true;
 
                 done();
@@ -112,9 +111,9 @@ describe('integration test', function() {
     });
 
     describe('method server.backupConfLocal', function() {
-    
+
         beforeEach(function() {
-            if(true === fs.existsSync('/etc/bind/')){
+            if (true === fs.existsSync('/etc/bind/')){
                 rmdir('/etc/bind/');
             }
 
@@ -154,21 +153,21 @@ describe('integration test', function() {
                 var orginal = notFs.existsSync('/etc/bind/named.conf.local');
                 var backup = notFs.existsSync('/etc/bind/named.conf.local.bac');
 
-                if(false === orginal && true === backup){
+                if (false === orginal && true === backup){
                     done();
                 }
-                else{
-                    if(true === orginal){
-                        done(new Error('orginal has not moved'))
+                else {
+                    if (true === orginal){
+                        done(new Error('orginal has not moved'));
                     }
-                    else if(false === backup){
-                        done(new Error('backup does not exists'))
+                    else if (false === backup){
+                        done(new Error('backup does not exists'));
                     }
                 }
 
             })
             .fail(function(){
-                done(new Error('backup failed'))
+                done(new Error('backup failed'));
             });
 
         });
@@ -176,9 +175,9 @@ describe('integration test', function() {
     });
 
     describe('method server.readKey', function() {
-    
+
         beforeEach(function() {
-            if(true === fs.existsSync('/ddns/key/')){
+            if (true === fs.existsSync('/ddns/key/')){
                 rmdir('/ddns/key/');
             }
 
@@ -191,11 +190,11 @@ describe('integration test', function() {
             key.push('Bits: AAA=');
             key.push('Created: 20160413014957');
             key.push('Publish: 20160413014957');
-            key.push('Activate: 20160413014957');           
+            key.push('Activate: 20160413014957');
 
-            notFs.writeFileSync('/ddns/key/Kddns_update.+157+52345.private', key.join("\n"), 'utf8');
+            notFs.writeFileSync('/ddns/key/Kddns_update.+157+52345.private', key.join('\n'), 'utf8');
 
-            notFs.writeFileSync('/ddns/key/Kddns_update.+157+52345.key', 'DDNS_UPDATE. IN KEY 0 3 157 aaaaaaaaaaaaaaaaaaaaaa==', 'utf8');            
+            notFs.writeFileSync('/ddns/key/Kddns_update.+157+52345.key', 'DDNS_UPDATE. IN KEY 0 3 157 aaaaaaaaaaaaaaaaaaaaaa==', 'utf8');
 
         });
 
@@ -212,21 +211,21 @@ describe('integration test', function() {
         it('find key', function(done) {
             server.readKey()
             .then(function(key){
-                expect(key).to.be.equal('aaaaaaaaaaaaaaaaaaaaaa==');                
+                expect(key).to.be.equal('aaaaaaaaaaaaaaaaaaaaaa==');
                 done();
             })
             .fail(function(){
-                done('no key found')
+                done('no key found');
             });
         });
 
     });
 
     describe('method server.addKeyToConfLocal', function() {
-    
+
         beforeEach(function() {
 
-            if(true === fs.existsSync('/etc/bind/')){
+            if (true === fs.existsSync('/etc/bind/')){
                 rmdir('/etc/bind/');
             }
 
@@ -234,7 +233,7 @@ describe('integration test', function() {
 
             notFs.writeFileSync('/etc/bind/named.conf.local', '', 'utf8');
 
-            if(true === fs.existsSync('/ddns/key/')){
+            if (true === fs.existsSync('/ddns/key/')){
                 rmdir('/ddns/key/');
             }
 
@@ -247,13 +246,13 @@ describe('integration test', function() {
             key.push('Bits: AAA=');
             key.push('Created: 20160413014957');
             key.push('Publish: 20160413014957');
-            key.push('Activate: 20160413014957');           
+            key.push('Activate: 20160413014957');
 
-            notFs.writeFileSync('/ddns/key/Kddns_update.+157+52345.private', key.join("\n"), 'utf8');
+            notFs.writeFileSync('/ddns/key/Kddns_update.+157+52345.private', key.join('\n'), 'utf8');
 
-            notFs.writeFileSync('/ddns/key/Kddns_update.+157+52345.key', 'DDNS_UPDATE. IN KEY 0 3 157 aaaaaaaaaaaaaaaaaaaaaa==', 'utf8');            
+            notFs.writeFileSync('/ddns/key/Kddns_update.+157+52345.key', 'DDNS_UPDATE. IN KEY 0 3 157 aaaaaaaaaaaaaaaaaaaaaa==', 'utf8');
 
-            if(true === fs.existsSync('/var/docker-ddns/tpls/')){
+            if (true === fs.existsSync('/var/docker-ddns/tpls/')){
                 rmdir('/var/docker-ddns/tpls/');
             }
 
@@ -283,30 +282,30 @@ describe('integration test', function() {
                 expectLocalConf.push('key "DDNS_UPDATE" {');
                 expectLocalConf.push('    algorithm hmac-md5;');
                 expectLocalConf.push('    secret "aaaaaaaaaaaaaaaaaaaaaa==";');
-                expectLocalConf.push('};');   
-                expectLocalConf.push('');                    
-                expectLocalConf = expectLocalConf.join("\n")
-               
-                expect(localConf).to.be.equal(expectLocalConf);                                
-               
+                expectLocalConf.push('};');
+                expectLocalConf.push('');
+                expectLocalConf = expectLocalConf.join('\n');
+
+                expect(localConf).to.be.equal(expectLocalConf);
+
                 done();
             })
             .fail(function(){
-                done('no key found')
+                done('no key found');
             });
         });
 
     });
 
     describe('method server.createZone', function() {
-        
+
         before(function(){
             notFs.copyFromFs('/var/docker-ddns/tpls/', true);
         });
 
         beforeEach(function() {
 
-            if(true === fs.existsSync('/etc/bind/')){
+            if (true === fs.existsSync('/etc/bind/')){
                 rmdir('/etc/bind/');
             }
 
@@ -314,14 +313,14 @@ describe('integration test', function() {
 
             notFs.writeFileSync('/etc/bind/named.conf.local', '', 'utf8');
 
-            fs.writeFileSync(config.getConfigFilePath(), '{}',  {encoding: 'utf8'});
+            fs.writeFileSync(config.getConfigFilePath(), '{}', {encoding: 'utf8'});
 
         });
 
         it('method exists and returns a promise', function() {
 
             config.reload();
-            
+
             expect(server.createZones).to.be.instanceof(Function);
 
             var promise = server.createZones();
@@ -336,7 +335,7 @@ describe('integration test', function() {
 
             var dbFileExists = fs.existsSync('/etc/bind/db.dev.example.com');
             expect(dbFileExists).to.be.false;
-            
+
             config.setNameServer('ns.example.com');
             config.addZone('dev.example.com');
             config.addZone('dev.example.org');
@@ -357,8 +356,8 @@ describe('integration test', function() {
                 localConfExpect.push('');
 
                 var localConf = fs.readFileSync('/etc/bind/named.conf.local');
-                
-                expect(localConf).to.be.equal(localConfExpect.join("\n"));
+
+                expect(localConf).to.be.equal(localConfExpect.join('\n'));
 
                 var dbFileExpect = [];
                 dbFileExpect.push('$TTL    30');
@@ -376,7 +375,7 @@ describe('integration test', function() {
 
                 var dbFile = fs.readFileSync('/etc/bind/db.dev.example.com');
 
-                expect(dbFile).to.be.equal(dbFileExpect.join("\n"));
+                expect(dbFile).to.be.equal(dbFileExpect.join('\n'));
 
 
                 dbFileExpect = [];
@@ -395,7 +394,7 @@ describe('integration test', function() {
 
                 dbFile = fs.readFileSync('/etc/bind/db.dev.example.org');
 
-                expect(dbFile).to.be.equal(dbFileExpect.join("\n"));
+                expect(dbFile).to.be.equal(dbFileExpect.join('\n'));
 
                 done();
 
@@ -406,5 +405,5 @@ describe('integration test', function() {
         });
 
     });
-    
+
 });
