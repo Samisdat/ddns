@@ -28,12 +28,12 @@ var config = (function() {
 
         nameServer = json.nameServer;
 
-        if (json.zones === undefined){
+        if (undefined === json.zones){
             json.zones = [];
         }
         zones = json.zones;
 
-        if (json.keyName === undefined){
+        if (undefined === json.keyName){
             json.keyName = undefined;
         }
 
