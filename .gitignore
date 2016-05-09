@@ -3,3 +3,6 @@ npm-debug.log
 ._*
 coverage/
 results.txt
+client/
+config.json
+key
