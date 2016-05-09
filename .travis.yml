@@ -10,6 +10,7 @@ services:
 
 before_script:
 - wget -O Dockerfile https://raw.githubusercontent.com/Samisdat/docker-ddns/develop/Dockerfile
+- cat Dockerfile
 
 script:
 - cat Dockerfile
