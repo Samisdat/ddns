@@ -31,9 +31,11 @@ module.exports = function (grunt) {
         .then(function(){
             var promises = [];
 
+            var nameServer = config.getNameServer();
             var zoneTpl = fs.readFileSync(config.getTplPath() + 'update-message-zone', {encoding: 'utf8'});
 
             config.getZones().forEach(function(zone){
+
                 var zoneMsg = grunt.template.process(
                     zoneTpl,
                     {
@@ -43,6 +45,7 @@ module.exports = function (grunt) {
                         }
                     }
                 );
+
                 promises.push(
                     qfs.appendFile(
                         '/ddns/client/create-update-message.sh',

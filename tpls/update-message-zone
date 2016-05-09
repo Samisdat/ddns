@@ -5,4 +5,3 @@ echo "update delete <%= ddnsDomain %>. A"
 echo "update add <%= ddnsDomain %> 30 IN A ${IP}"
 echo "show"
 echo "send"
-

@@ -12,7 +12,8 @@ var mocha = {
             'test/lib/qexec.js',
             'test/lib/qfs.js',
             'test/lib/rmdir.js',
-            'test/lib/server.js'
+            'test/lib/server.js',
+            'test/lib/integration.js'
         ]        
     },
     server:{
@@ -44,7 +45,12 @@ var mocha = {
         src: [    
             'test/lib/client.js'
         ]        
-    }
+    },
+    integration:{
+        src: [    
+            'test/lib/integration.js'
+        ]        
+    }    
 };
 
 module.exports = mocha;

@@ -15,7 +15,7 @@ module.exports = function (grunt) {
 
         var done = this.async();
 
-        server.createClient()
+        client.createClient()
         .then(function(){
             done();
         })
