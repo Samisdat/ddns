@@ -158,7 +158,6 @@ describe('config ', function() {
 
         var json = {};
         json.nameServer = 'ns.example.org';
-        json.tplPath = '/var/docker-ddns/tpls/';
 
         json = JSON.stringify(json);
 
@@ -167,7 +166,7 @@ describe('config ', function() {
 
         expect(config.getNameServer()).to.be.equal('ns.example.org');
         expect(config.getZones()).to.deep.equal([]);
-        expect(config.getTplPath()).to.be.equal('/var/docker-ddns/tpls/');
+        expect(config.getTplPath()).to.be.equal('/ddns/tpls/');
 
 
     });

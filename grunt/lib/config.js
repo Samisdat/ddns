@@ -11,7 +11,7 @@ var config = (function() {
 
     var keyName;
 
-    var tplPath = '/var/docker-ddns/tpls/';
+    var tplPath = '/ddns/tpls/';
 
     var load = function(){
 
@@ -19,7 +19,7 @@ var config = (function() {
             nameServer = undefined;
             zones = [];
             keyName = undefined;
-            tplPath = '/var/docker-ddns/tpls/';
+            tplPath = '/ddns/tpls/';
             return;
         }
 
@@ -39,7 +39,10 @@ var config = (function() {
 
         keyName = json.keyName;
 
-        tplPath = '/var/docker-ddns/tpls/';
+        if(undefined === json.tplPath){
+            json.tplPath = '/ddns/tpls/';
+        }
+        tplPath = json.tplPath;
 
     };
     load();
