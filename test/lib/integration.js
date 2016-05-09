@@ -9,9 +9,9 @@ var server = require('../../grunt/lib/server')(grunt);
 var client = require('../../grunt/lib/client')(grunt);
 var qexec = require('../../grunt/lib/qexec');
 
-describe.skip('config ', function() {
+describe('config ', function() {
 
-    it.skip('can create zone', function(done) {
+    it('can create zone', function(done) {
 
         config.setNameServer('ns.example.org');
         config.addZone('dev.example.org');
@@ -34,7 +34,7 @@ describe.skip('config ', function() {
 
     });
 
-    it('can create client', function(done) {
+    it.skip('can create client', function(done) {
 
         client.createClient()
         .then(function(response){

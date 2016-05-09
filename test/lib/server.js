@@ -252,11 +252,11 @@ describe('integration test', function() {
 
             notFs.writeFileSync('/ddns/key/Kddns_update.+157+52345.key', 'DDNS_UPDATE. IN KEY 0 3 157 aaaaaaaaaaaaaaaaaaaaaa==', 'utf8');
 
-            if (true === fs.existsSync('/var/docker-ddns/tpls/')){
-                rmdir('/var/docker-ddns/tpls/');
+            if (true === fs.existsSync('/ddns/tpls/')){
+                rmdir('/ddns/tpls/');
             }
 
-            notFs.copyFromFs('/var/docker-ddns/tpls/', true);
+            notFs.copyFromFs('/ddns/tpls/', true);
 
 
         });
@@ -300,7 +300,7 @@ describe('integration test', function() {
     describe('method server.createZone', function() {
 
         before(function(){
-            notFs.copyFromFs('/var/docker-ddns/tpls/', true);
+            notFs.copyFromFs('/ddns/tpls/', true);
         });
 
         beforeEach(function() {
