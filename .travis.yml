@@ -1,0 +1,17 @@
+language: node_js
+
+node_js:
+  - "5"
+
+sudo: required
+
+services:
+  - docker
+
+before_script:
+- wget -O Dockerfile https://raw.githubusercontent.com/Samisdat/docker-ddns/develop/Dockerfile
+
+script:
+- cat Dockerfile
+
+#after_failure: cat docker_daemon.log
