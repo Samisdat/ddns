@@ -11,7 +11,7 @@ env:
   - secure: jGaloInQybJ86pjTcim+zJhMqbatcKXr7VbzJyzJSugRGpA08S9CwmK3XuQG943v8QWLJIkquivIsacabCQV9MaOKZydBCEXeRbYgCd2QvXmGjLI/TKyxy7KW30PN9+BDg1Q1U/fS6sX6PgYrB97mAkutgh5zXUUfJamvfX3hym1SlQGr8EcktvC8RdUgTo9r9SJHuU27m+jQvVoTkdJRIT+ygWdD0ikLr53X+5HfMJwxYgeKe9K6eohLrmgunD586degwufIEJcuMToklKJ0UZoANEsUtYr9TkcssZNU6+1l2Ydqwhq1DjCd8VP+ysTMdE6kNTc7h/zrqSjuVgV007BYwzcz2dl/2BpV5otrx5t2+HOxVo29P0AaWBtq5Td0kr1UUwwWa1kkXRyDZVL+VQ+60E+75xRB22sPl5PLirCR85TTxju1zIBe0yxtWGp6u4HHqkQ+h1zRme1NCfFoBEKWI6rr6SrlnlNky+M8fEoQ3XqSOb7OFBUHWaRWW2PG/Y842jxYLH52qjudxgDTbCwTcMk94Rogvvg6itMDHnmTMCe+SQxlO/pN8bzVZbhM/JyygHW5SKzWMqE9OFrVpSIDcpSMMNmDVlFdzHIPOcWr1xgfNQK2VJC4bWKeXVP+JXGLLyzRgnmkiffZJeK9Onn1xBkc3kuIpYOQlc4JFk=
 script:
 - docker build -t ddns-travis .
-- docker run -d -P -e CODECLIMATE_REPO_TOKEN=$CODECLIMATE_REPO_TOKEN--name ddns-travis ddns-travis
+- docker run -d -P -e CODECLIMATE_REPO_TOKEN=$CODECLIMATE_REPO_TOKEN --name ddns-travis ddns-travis
 - docker exec ddns-travis echo $CODECLIMATE_REPO_TOKEN
 - docker exec ddns-travis grunt test
 - docker exec ddns-travis npm install -g codeclimate-test-reporter
