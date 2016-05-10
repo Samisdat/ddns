@@ -1,26 +1,21 @@
-#sudo: required
-#services:
-#- docker
-#language: node_js
-#node_js:
-#- '5'
-#env:
-#global:
-#- COMMIT=${TRAVIS_COMMIT::8}
-#- secure: Mgk8gtqvkHProaJofKN+CQGoifSpyMPyGnR+OAA+Tb4vc8ZSN6VUetv9B+x6Ucmw3t8eGN0MTdutN++Xpg/PSeFk5PaOjcvh9JH7hiM9m/bofJBTcZDH9qC0b7L92MhbZnnbSgM2uNBNpu58QNXnDIitXmqs1Cu8hAO+DgZ0P9x/3idvQUzetfPqeOk2Y044lH1YhaM/gsVrPscxnKvjTkbeCdJ38rNN4EI8u4GzCv8Pdvk6h630i/zMV4gOj+skeyh0kTVGskhc8gVSDSg6QPMy4f2Cbyuyrq9SggVvop1fVxfI1Q5aKt2wEVKCvNJ/E/Oj0DN4UbKxgnPA45KkZo963MN7eNIwt1sh/jFCI/m+LGmsiDmoCSjnMV6QItcQV2FU/kn8sztPexMcb5wuSFdH+4HyjI3iFLc+4BhjdKHJjzb0//t/8tQTs/rT9eH7j1JBT1JBjGPWzZq6yidBGvfqTvyr9sl/honTHUty0ORaDfO/cZWoUWrxGYwV8KYj5hJi1NkXFFJqcM6QYyizpYg1yHAqxCj6LAGIY50HNKspNwlhuPnMc/LynSlDIoq27u2B8VVCeoOtrcWDDUMfFCOd6r9LV+wNS7LmmcbQ9iJO2Tz54Gs+ycykNGv1EjDBO4WSFYGZITXO6ZDVT6BDfGDrTp3bY1nsLZbRSnZe2sI=
-#- secure: 2o8N3OxAQkQBcYelZUzwmG0d1TE4bWQx9y7689UczTEseG9VRUfdu0Cns70TvfIrzSjveDl5JsxHS3G7Gbv9f2+/hnVktjMj22YYfziOfONrMJICeC415zpjUF/aSoNNXZua7xy1QEOXPodXV5jXGVl4xIO6a2QoSoC9ZLQwNBiGUGBY20kiMI0uuhEFIL6/W63JSM70CCPK5FOA18Ilj156h+mwNY7JYybpdT38iWIk8FqPTOqev/pNQx6wjTdlmCR9Up0RKoBtlUIzV1ogpbReAH0utGTvlaHLpcWJzSqZIFfJqnwmquw5iG1LvDx8rtlvPP+dcm8lnQS74FKJCFLKmINHE9QelgDtKU6rYYPSCWVvN+MgMZYmC6a4ZJAeUZKOgOPeKF6W98hSRrtz0ceXqjubmqmpcQZVNmrUT7SxE/24lwHhqZO7bbs3y9/k6MV7ta/lgjjGEzUNy76sPIIURivxZpPwVoucEAN7zVTtK1mNrMYF23NtnS+5xQi//HFlMc50mID9wXPc7VRx1tQWwEY3Qrt2F8+IOoHdTGfMkzFiVoUCFsHtS6iroGv1ymmWBi3OQtjzTdiKm1xRrOz4jdai7uPZVLmi6EVsZ/vMuAz6WdViKcdv6UKGAYYSXxCiPeRanoj75BZn192lbiZv5Tj1ZuM8otVf23VWXlE=
-#- secure: x1v+WrvwXVs1OyXnmXSfWJEisUpYtV9A9YhqHhtC0CgGllautXkjidKFl06jrI8pGtycf87DIokKILHnnEHBZQGCncONtSgSiU67450FRy9ItchFU2hqLNaNWdMlaJx8YO+yPJq1m+thEHtUb48sxpzvdeQZrc5EnzRd7clip0dRvjNb9DcXC213twrid8lOEJIM95GHImdw5aiOqL84xejOttnm62Lj+F1MsU+Am0PDgB3GII1/EitKoITJNepdfGFGk64T8RuP9uYWa3/Spd76dJnrz8B9WEyR0vvtNbugxNkwaJUjaXgvpL61+HlJwzsUwZWb74Z136QUD6hhClmn4uJ5Emc6gJg4gkYyJcsJSOs4XWZzbZuIzNF1PcHNHdYYghL7XLrRsuGx3t8LoUqMi20ja+41GBice8vP7YudwjQ81akEq/4GKfzrB6GpH0Im7ZonarPRJChKznMQA9cLkyfq9O+lX5psi+wjukT3cvw2Az/fKbDxnZLJw9m+3F0Pypje92SUWwlAsAAFSdsHZGRV3TU8X1SGe5gnDQbNBjDv6oIcuekVvnpO/RL4PnfNevkDPeFh3F4tTbN+kuB16P+LCSQganxgx9Dh9cZ+/YaS8LTv5QZ51G9PvFfuvmvUNpgK4R7jNxISy8OOQxCpDcMbEjCXCBw5l4R5Uo0=
-#before_script:
-#- wget -O Dockerfile https://raw.githubusercontent.com/Samisdat/ddns/develop/Dockerfile
-#script:
-#- echo "hallo"
-#- cat Dockerfile
-#fter_success:
-#- CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build main.go
-#- docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-#- export REPO=Samisdat/ddns
-#- export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH; fi`
-#- docker build -f Dockerfile -t $REPO:$COMMIT .
-#- docker tag $REPO:$COMMIT $REPO:$TAG
-#- docker tag $REPO:$COMMIT $REPO:travis-$TRAVIS_BUILD_NUMBER
-#- docker push $REPO
+sudo: required
+services:
+- docker
+language: node_js
+node_js:
+- '5'
+env:
+  global:
+  - COMMIT=${TRAVIS_COMMIT::8}
+  - secure: LB4hXQ2NaUmhj5oWDS7KnC3ciX3JHRkepBs7zSpZPUkUQy2tqroU931CPNPtL39JsTmsAunwCyIwuOikqpzA1qioC+uDifZmwBFWfbw5md9kocB9sC+RMNq0s89LeRvkSah0tw8WL108b2i0J1wWcwc59GhxAwt27XshToT08CBIHtxA94aVdKShDyFxSBRuUEQdw3YUzNkjnMfMT/4CBjGizgDl/BWXn8otCJFiCenVTMK4js2zTjPmfq6S0fEI4B+QFmSfrDSqmfjBs5zu6MYDUX8Db28TvLFdPRUZRfnoFzRPVCFAgvGf/lfjjT3MT6XQm/p4BTJV0mvAMPtNTHLi7iKPcg8Hk1Q3WtV2qGdKiv4PRR178sFh+ZwVB9m7ebzhY/MVPf96AEEonnPvh8H3/LDVlbuEf8hFbBClnWTu4of99ywlUxQtVWeYFrAIMS+ygv44RQikDpw5pNYeu9ghgy/841mjBTxQCPJqqFao4ZHQQnTiAtlUwqgWJRjHjzPMfiZJ/J/Nyu5ZUTENIIlEbxxzyapkthRC0tUPpVFxuTLoAPLr81LJQ/gINKWA1BHuij93lPcg0loQh4ZAHdqDcPn1hpSrfsWMzOZOGu8I8QS2HKdnNlJ9jF5Zoz54JltCL4hnWdh/qXiJMuEaPF8MYC3tK7ZSe81Ux0wpJNo=
+script:
+- echo "hallo"
+- cat Dockerfile
+after_success:
+- export REPO=Samisdat/ddns
+- export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH;
+  fi`
+- echo $REPO
+- echo $COMMIT
+- echo $TAG
+- curl -H "Content-Type:application/json" --data '{"build":true}' -X POST https://registry.hub.docker.com/u/samisdat/ddns/trigger/$DOCKER_TOKEN/
