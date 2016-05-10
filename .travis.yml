@@ -8,11 +8,13 @@ env:
   global:
   - COMMIT=${TRAVIS_COMMIT::8}
   - secure: LB4hXQ2NaUmhj5oWDS7KnC3ciX3JHRkepBs7zSpZPUkUQy2tqroU931CPNPtL39JsTmsAunwCyIwuOikqpzA1qioC+uDifZmwBFWfbw5md9kocB9sC+RMNq0s89LeRvkSah0tw8WL108b2i0J1wWcwc59GhxAwt27XshToT08CBIHtxA94aVdKShDyFxSBRuUEQdw3YUzNkjnMfMT/4CBjGizgDl/BWXn8otCJFiCenVTMK4js2zTjPmfq6S0fEI4B+QFmSfrDSqmfjBs5zu6MYDUX8Db28TvLFdPRUZRfnoFzRPVCFAgvGf/lfjjT3MT6XQm/p4BTJV0mvAMPtNTHLi7iKPcg8Hk1Q3WtV2qGdKiv4PRR178sFh+ZwVB9m7ebzhY/MVPf96AEEonnPvh8H3/LDVlbuEf8hFbBClnWTu4of99ywlUxQtVWeYFrAIMS+ygv44RQikDpw5pNYeu9ghgy/841mjBTxQCPJqqFao4ZHQQnTiAtlUwqgWJRjHjzPMfiZJ/J/Nyu5ZUTENIIlEbxxzyapkthRC0tUPpVFxuTLoAPLr81LJQ/gINKWA1BHuij93lPcg0loQh4ZAHdqDcPn1hpSrfsWMzOZOGu8I8QS2HKdnNlJ9jF5Zoz54JltCL4hnWdh/qXiJMuEaPF8MYC3tK7ZSe81Ux0wpJNo=
+  - secure: oUq7RLAV4nM0bRIr4xsDrsx9koJ6j5ZzAJ5YqawDR5QtJycC5Ys630n7UABINXDucMxHeMX8aFvPG9w94ecwaFv8fuhJ7iz87MXO2kxsnjS3oMnYN0bKLKRM3YvOc/mSlG22vvE+Bw0LYz/PK2I1dYzZU60ui69DB9PnpJU9uj1yCwXWYqaWw4FMJGNG8gvRua/baBnnpVJwxHkzJa8kPk9PvT4glIoSkA+dSOXSR8gd2UC7/qyKbx1Uz5OmqKm/DRST8Ac6tCz+TeNNRJYIK1s2UpoThPT7fH6m1g9gDlZ+Ft8TNCxtD08msTXTfdebNXBCddC43COQpLBK8Mlsdeh9ONVdIiIhSZW8NCrCKk3rP99/n3TyA5o97QboTqoUBKYEF+a8k0pDHNa3Uk2Rph5/OZAyHbXOnnnWGvelFLiFXUfSXoB6Tvtqd033fROyA1YAgoIK/g+7KvVVaCAF8FEUryKwnprH4ihcgA4JkcCB9rF9r3v7+HeQi1SpBmr7y8mTiUHqRqOIsC2K4Q2pw/t0nEDxF2jgsts0/6EksIHhh8tK422ExEIb7+QQJn6DK3da7zSOANCqR6VQp5mjsedOpT88DvxOwhMI0Ig2QetO/AAuawL5N/28yyqdQhVYgkbCPMMSDR8+tls+8Fvn09/buf7Zg3Yqg0J0VVbC+jo=
 script:
-- docker build -t ddns .  
-- docker run -P --name ddns-travis ddns grunt test
+- docker build -t ddns-travis .
+- docker run -d -P --name ddns-travis ddns-travis
+- docker exec ddns-travis grunt test
 - docker exec ddns-travis npm install -g codeclimate-test-reporter
-
+- docker exec ddns-travis grunt coverage
 after_success:
 - export REPO=Samisdat/ddns
 - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH;

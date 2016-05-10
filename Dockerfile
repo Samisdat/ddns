@@ -21,6 +21,6 @@ RUN chmod +x /ddns/start.sh
 EXPOSE 53/udp
 EXPOSE 53
 
-#CMD service bind9 restart && tail -F /var/log/named/bind.log
+CMD service bind9 restart && tail -F /var/log/named/bind.log
 
 
