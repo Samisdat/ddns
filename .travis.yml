@@ -15,6 +15,7 @@ script:
 - docker exec ddns-travis grunt test
 - docker exec ddns-travis npm install -g codeclimate-test-reporter
 - docker exec ddns-travis grunt coverage
+- docker exec -it ddns-travis sh -c 'codeclimate-test-reporter < /ddns/coverage/lcov.info' 
 after_success:
 - export REPO=Samisdat/ddns
 - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH;
