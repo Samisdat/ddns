@@ -9,8 +9,10 @@ env:
   - COMMIT=${TRAVIS_COMMIT::8}
   - secure: LB4hXQ2NaUmhj5oWDS7KnC3ciX3JHRkepBs7zSpZPUkUQy2tqroU931CPNPtL39JsTmsAunwCyIwuOikqpzA1qioC+uDifZmwBFWfbw5md9kocB9sC+RMNq0s89LeRvkSah0tw8WL108b2i0J1wWcwc59GhxAwt27XshToT08CBIHtxA94aVdKShDyFxSBRuUEQdw3YUzNkjnMfMT/4CBjGizgDl/BWXn8otCJFiCenVTMK4js2zTjPmfq6S0fEI4B+QFmSfrDSqmfjBs5zu6MYDUX8Db28TvLFdPRUZRfnoFzRPVCFAgvGf/lfjjT3MT6XQm/p4BTJV0mvAMPtNTHLi7iKPcg8Hk1Q3WtV2qGdKiv4PRR178sFh+ZwVB9m7ebzhY/MVPf96AEEonnPvh8H3/LDVlbuEf8hFbBClnWTu4of99ywlUxQtVWeYFrAIMS+ygv44RQikDpw5pNYeu9ghgy/841mjBTxQCPJqqFao4ZHQQnTiAtlUwqgWJRjHjzPMfiZJ/J/Nyu5ZUTENIIlEbxxzyapkthRC0tUPpVFxuTLoAPLr81LJQ/gINKWA1BHuij93lPcg0loQh4ZAHdqDcPn1hpSrfsWMzOZOGu8I8QS2HKdnNlJ9jF5Zoz54JltCL4hnWdh/qXiJMuEaPF8MYC3tK7ZSe81Ux0wpJNo=
 script:
-- echo "hallo"
-- cat Dockerfile
+- docker build -t ddns .  
+- docker start --name ddns ddns
+- docker exec ddns grunt test  
+
 after_success:
 - export REPO=Samisdat/ddns
 - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH;
