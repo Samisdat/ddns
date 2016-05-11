@@ -1,0 +1,7 @@
+#echo "server NAMESERVER"
+echo "server localhost"
+echo "zone DYNAMIC_DOMAIN"
+echo "update delete DYNAMIC_DOMAIN. A"
+echo "update add DYNAMIC_DOMAIN 30 IN A ${IP}"
+echo "show"
+echo "send"
