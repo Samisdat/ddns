@@ -1,12 +1,12 @@
 /*global module, require, process */
 
 module.exports = function(grunt) {
-    "use strict";
+    'use strict';
 
     require('time-grunt')(grunt);
-    
+
     require('load-grunt-tasks')(grunt, {pattern: [
-        'grunt-*', 
+        'grunt-*',
         '@*/grunt-*',
         'gruntify-eslint*'
     ]});

@@ -39,7 +39,7 @@ var config = (function() {
 
         keyName = json.keyName;
 
-        if(undefined === json.tplPath){
+        if (undefined === json.tplPath){
             json.tplPath = '/ddns/tpls/';
         }
         tplPath = json.tplPath;

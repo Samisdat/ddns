@@ -112,10 +112,10 @@ describe('config ', function() {
         expect(config.getZones()).to.deep.equal(['dev.example.com']);
 
         // add second zone
-        expect(config.hasZone('dev.example.org')).to.be.false;        
+        expect(config.hasZone('dev.example.org')).to.be.false;
         config.addZone('dev.example.org');
         expect(config.getZones()).to.deep.equal(['dev.example.com', 'dev.example.org']);
-        expect(config.hasZone('dev.example.org')).to.be.true;        
+        expect(config.hasZone('dev.example.org')).to.be.true;
 
         // remove first one
         config.removeZone('dev.example.com');
@@ -137,7 +137,7 @@ describe('config ', function() {
         var json = {};
         json.nameServer = 'ns.example.org';
         json.zones = ['dev.example.org'];
-        json.keyName = 'akeyname';        
+        json.keyName = 'akeyname';
         json.tplPath = '/var/docker-ddns/tpls/';
 
         json = JSON.stringify(json);

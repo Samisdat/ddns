@@ -6,7 +6,7 @@ var mocha = {
         clearRequireCache: false // Optionally clear the require cache before running tests (defaults to false)
     },
     all:{
-        src: [    
+        src: [
             'test/lib/client.js',
             'test/lib/config.js',
             'test/lib/qexec.js',
@@ -14,43 +14,43 @@ var mocha = {
             'test/lib/rmdir.js',
             'test/lib/server.js',
             'test/lib/integration.js'
-        ]        
+        ]
     },
     server:{
-        src: [    
+        src: [
             'test/lib/server.js'
-        ]        
+        ]
     },
     rmdir:{
-        src: [    
+        src: [
             'test/lib/rmdir.js'
-        ]        
+        ]
     },
     config:{
-        src: [    
+        src: [
             'test/lib/config.js'
-        ]        
+        ]
     },
     qfs:{
-        src: [    
+        src: [
             'test/lib/qfs.js'
-        ]        
+        ]
     },
     qexec:{
-        src: [    
+        src: [
             'test/lib/qexec.js'
-        ]        
+        ]
     },
     client:{
-        src: [    
+        src: [
             'test/lib/client.js'
-        ]        
+        ]
     },
     integration:{
-        src: [    
+        src: [
             'test/lib/integration.js'
-        ]        
-    }    
+        ]
+    }
 };
 
 module.exports = mocha;

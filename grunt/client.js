@@ -4,12 +4,12 @@ var config = require('./lib/config');
 
 module.exports = function (grunt) {
 
-    "use strict";
+    'use strict';
 
     var client = require('./lib/client')(grunt);
 
     /**
-     @TODO taring client to get it 
+     @TODO taring client to get it
     */
     grunt.registerTask('client:create', 'create ddns client', function(args) {
 
@@ -30,4 +30,4 @@ module.exports = function (grunt) {
 };
 
 
-    
+

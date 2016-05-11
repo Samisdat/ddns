@@ -371,7 +371,7 @@ describe('promise filesystem ', function() {
         });
 
         it('fails for some reason', function(done) {
-            
+
             notFs.setForce('writeFile', function(){
                 return 'MOCK';
             });
@@ -386,7 +386,7 @@ describe('promise filesystem ', function() {
 
             promise.fail(function(){
                 done();
-            });                
+            });
 
         });
 

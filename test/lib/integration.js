@@ -20,7 +20,7 @@ describe('config ', function() {
         .then(function(){
             console.log(config.getZones());
             done();
-        });        
+        });
 
     });
 
@@ -30,7 +30,7 @@ describe('config ', function() {
         .then(function(response){
             expect(response.stdout.trim()).to.be.equal('127.0.0.1');
             done();
-        });        
+        });
 
     });
 
@@ -39,7 +39,7 @@ describe('config ', function() {
         client.createClient()
         .then(function(response){
             done();
-        });        
+        });
 
     });
 
