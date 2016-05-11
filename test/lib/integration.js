@@ -37,7 +37,7 @@ describe('config ', function() {
     it.skip('can create client', function(done) {
 
         client.createClient()
-        .then(function(response){
+        .then(function(){
             done();
         });
 

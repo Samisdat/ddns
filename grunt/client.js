@@ -1,17 +1,15 @@
 /*global module, require */
 
-var config = require('./lib/config');
+'use strict';
 
 module.exports = function (grunt) {
-
-    'use strict';
 
     var client = require('./lib/client')(grunt);
 
     /**
      @TODO taring client to get it
     */
-    grunt.registerTask('client:create', 'create ddns client', function(args) {
+    grunt.registerTask('client:create', 'create ddns client', function() {
 
         var done = this.async();
 

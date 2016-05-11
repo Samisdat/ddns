@@ -1,14 +1,14 @@
 /*global module, require */
 
+'use strict';
+
 var config = require('./lib/config');
 
 module.exports = function (grunt) {
 
-    'use strict';
-
     var server = require('./lib/server')(grunt);
 
-    grunt.registerTask('server:create_key', 'create key', function(args) {
+    grunt.registerTask('server:create_key', 'create key', function() {
 
         var done = this.async();
 
@@ -23,7 +23,7 @@ module.exports = function (grunt) {
 
     });
 
-    grunt.registerTask('server:add_key', 'add key to local config', function(args) {
+    grunt.registerTask('server:add_key', 'add key to local config', function() {
 
         var done = this.async();
 

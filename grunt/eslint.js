@@ -1,5 +1,7 @@
 /*global module */
 
+'use strict';
+
 var files = [
     'Gruntfile.js',
     'grunt/**/*.js',
@@ -7,11 +9,11 @@ var files = [
 ];
 
 var eslint = {
-    lint:{
+    lint: {
         src: files
     },
-    lintAndFix:{
-        options:{
+    lintAndFix: {
+        options: {
             fix: true
         },
         src: files
