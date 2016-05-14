@@ -15,6 +15,9 @@ module.exports = function (grunt) {
 
         client.createClient()
         .then(function(){
+            return client.tarClient();
+        })
+        .then(function(){
             done();
         })
         .catch(function(){

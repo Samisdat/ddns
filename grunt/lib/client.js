@@ -100,8 +100,26 @@ module.exports = function (grunt) {
 
     };
 
+    var tarClient = function(){
+
+        var deferred = q.defer();
+
+        qexec(grunt.log, 'cd /ddns & tar cvf ./client.tar ./client/', 'make update script executable', 750, true)
+        .then(function(){
+            deferred.resolve();
+        });
+
+        /*
+        echo "client script created. copy from host by"
+        echo "docker cp CONTAINER:/ddns/client.tar HOSTPATH"        
+        */
+        return deferred.promise;
+
+    };    
+
     return {
         createUpdateMessageScript: createUpdateMessageScript,
+        tarClient: tarClient,
         createClient: createClient
     };
 
