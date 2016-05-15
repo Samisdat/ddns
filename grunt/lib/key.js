@@ -8,18 +8,20 @@ var config = require('./config');
 
 module.exports = function (grunt) {
 
-    var createKey = function(){
+    var createKeyDir = function(){
+        return qfs.mkdir('/ddns/key');
+    };
+
+    var wipeKeyDir = function(){
+        return qexec(grunt.log, 'rm -f /ddns/key/Kddns_update*', 'delete key if already exists');
+    };
+
+    var createKeyFiles = function(){
 
         var deferred = q.defer();
 
-        qexec(grunt.log, 'mkdir -p /ddns/key', 'create dir for key', 750, true)
-        .then(function () {
-            config.setKeyName(undefined);
-            return qexec(grunt.log, 'rm -f /ddns/key/Kddns_update*', 'delete key if already exists');
-        })
-        .then(function () {
-            return qexec(grunt.log, 'dnssec-keygen -K /ddns/key/ -a HMAC-MD5 -b 128 -r /dev/urandom -n USER DDNS_UPDATE', 'create key');
-        })
+        qexec(grunt.log, 'dnssec-keygen -K /ddns/key/ -a HMAC-MD5 -b 128 -r /dev/urandom -n USER DDNS_UPDATE', 'create key')
+
         .then(function (response) {
             config.setKeyName(response.stdout.trim());
             deferred.resolve();
@@ -29,6 +31,27 @@ module.exports = function (grunt) {
         });
 
         return deferred.promise;
+    };
+
+    var create = function(){
+
+        var deferred = q.defer();        
+
+        config.setKeyName(undefined);
+        
+        createKeyDir()
+        .then(function(){
+            return wipeKeyDir();    
+        })
+        .then(function(){
+            return createKeyFiles();    
+        })
+        .then(function(){
+            deferred.resolve();    
+        })
+                        
+        return deferred.promise;
+        
     };
 
     var readKey = function(){
@@ -79,7 +102,10 @@ module.exports = function (grunt) {
 
 
     return {
-        createKey: createKey,
+        createKeyDir: createKeyDir,
+        wipeKeyDir: wipeKeyDir,
+        createKeyFiles: createKeyFiles,
+        create: create,
         readKey: readKey
     };
 

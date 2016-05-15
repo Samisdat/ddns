@@ -9,6 +9,7 @@ var expect = require('chai').expect;
 
 var q = require('q');
 var fs = require('fs');
+var qfs = require('../../grunt/lib/qfs');
 
 var rmdir = require('../../grunt/lib/rmdir');
 
@@ -19,30 +20,30 @@ grunt.log.error = function(){};
 
 var key = require('../../grunt/lib/key')(grunt);
 var config = require('../../grunt/lib/config');
+var notFs = require('not-fs');
 
-describe('testing in real file sys', function() {
+describe('key', function() {
 
-    beforeEach(function() {
-        if (true === fs.existsSync('/ddns/key')){
-            rmdir('/ddns/key/');
-        }
+    before(function() {
+        notFs.swapIn();
     });
 
-    it('succeed in create a key ', function(done) {
+    after(function() {
+        notFs.swapOut();
+    });
+
+    it('key.createKeyDir', function(done) {
 
         var dirExists = fs.existsSync('/ddns/key');
         expect(dirExists).to.be.false;
 
-        key.createKey()
+        key.createKeyDir()
         .then(function(){
 
             dirExists = fs.existsSync('/ddns/key');
             expect(dirExists).to.be.true;
 
-            key.readKey()
-            .then(function(){
-                done();
-            });
+            done();
 
         });
 
@@ -51,53 +52,66 @@ describe('testing in real file sys', function() {
 });
 
 
-'use strict';
-
-/*
-cmd to get ip from local dns
-dig @localhost dev.foo.org +short
-*/
-
-var expect = require('chai').expect;
-
-var q = require('q');
-var fs = require('fs');
-
-var rmdir = require('../../grunt/lib/rmdir');
-
-var grunt = require('grunt');
-grunt.log.write = function(){};
-grunt.log.ok = function(){};
-grunt.log.error = function(){};
-
-var server = require('../../grunt/lib/server')(grunt);
-var config = require('../../grunt/lib/config');
-var notFs = require('not-fs');
-
 describe('testing in real file sys', function() {
 
     beforeEach(function() {
         if (true === fs.existsSync('/ddns/key')){
             rmdir('/ddns/key/');
         }
+
+        fs.mkdirSync('/ddns/key');
+
     });
 
-    it('succeed in create a key ', function(done) {
+    it('key.wipeKeyDir', function(done) {
+
+        key.wipeKeyDir()
+        .then(function(){
+            done();
+        });
+
+    });
+
+
+    it('succeed in create a key', function(done) {
 
         var dirExists = fs.existsSync('/ddns/key');
-        expect(dirExists).to.be.false;
+        expect(dirExists).to.be.true;
 
-        server.createKey()
+        key.createKeyFiles()
         .then(function(){
-
-            dirExists = fs.existsSync('/ddns/key');
-            expect(dirExists).to.be.true;
-
-            server.readKey()
-            .then(function(){
+            qfs.readdir('/ddns/key/')
+            .then(function(files){
+                expect(files.length).to.be.equal(2);
                 done();
             });
 
+        });
+
+    });
+
+    it('fail in create a key', function(done) {
+
+        var dirExists = fs.existsSync('/ddns/key');
+        expect(dirExists).to.be.true;
+        rmdir('/ddns/key');
+
+        key.createKeyFiles()
+        .fail(function(){
+            done();
+        });
+
+    });
+
+    it('complete create', function(done) {
+
+        var dirExists = fs.existsSync('/ddns/key');
+        expect(dirExists).to.be.true;
+        rmdir('/ddns/key');
+
+        key.create()
+        .then(function(){
+            done();
         });
 
     });
@@ -138,18 +152,8 @@ describe('method server.readKey', function() {
 
     });
 
-    it('method exists and returns a promise', function() {
-
-        expect(server.readKey).to.be.instanceof(Function);
-
-        var promise = server.readKey();
-
-        expect(q.isPromise(promise)).to.be.true;
-
-    });
-
     it('find key', function(done) {
-        server.readKey()
+        key.readKey()
         .then(function(key){
             expect(key).to.be.equal('aaaaaaaaaaaaaaaaaaaaaa==');
             done();

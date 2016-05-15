@@ -29,7 +29,7 @@ describe('testing in real file sys', function() {
         }
     });
 
-    it('createkey', function(done) {
+    it('succeed in create a key ', function(done) {
 
         var dirExists = fs.existsSync('/ddns/key');
         expect(dirExists).to.be.false;
