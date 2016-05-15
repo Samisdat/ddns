@@ -1,3 +1,10 @@
+[![Build Status](https://travis-ci.org/Samisdat/ddns.svg?branch=develop)](https://travis-ci.org/Samisdat/ddns)
+
+[![Code Climate](https://codeclimate.com/github/Samisdat/ddns/badges/gpa.svg)](https://codeclimate.com/github/Samisdat/ddns)
+
+[![Test Coverage](https://codeclimate.com/github/Samisdat/ddns/badges/coverage.svg)](https://codeclimate.com/github/Samisdat/ddns/coverage)
+
+
 ## Build with all dependies
 
 docker run -d --name ddns samisdat/ddns
