@@ -9,6 +9,7 @@ var mochaIstanbul = {
             'test/lib/qfs.js',
             'test/lib/rmdir.js',
             'test/lib/server.js',
+            'test/lib/key.js',
             'test/lib/integration.js'
         ]
     },
@@ -36,7 +37,12 @@ var mochaIstanbul = {
         src: [
             'test/lib/qfs.js'
         ]
-    }
+    },
+    key: {
+        src: [
+            'test/lib/key.js'
+        ]
+    }    
 };
 
 module.exports = mochaIstanbul;
