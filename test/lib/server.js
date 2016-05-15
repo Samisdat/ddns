@@ -11,7 +11,12 @@ var q = require('q');
 var fs = require('fs');
 
 var rmdir = require('../../grunt/lib/rmdir');
+
 var grunt = require('grunt');
+grunt.log.write = function(){};
+grunt.log.ok = function(){};
+grunt.log.error = function(){};
+
 var server = require('../../grunt/lib/server')(grunt);
 var config = require('../../grunt/lib/config');
 var notFs = require('not-fs');
