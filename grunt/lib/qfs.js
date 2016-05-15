@@ -74,17 +74,17 @@ var readFile = function(file){
     var deferred = q.defer();
 
     fs.readFile(
-            file,
-            {encoding: 'utf8'},
-            function(err, data){
+        file,
+        {encoding: 'utf8'},
+        function(err, data){
 
-                if (null !== err){
-                    deferred.reject(err);
-                    return;
-                }
-                deferred.resolve(data);
+            if (null !== err){
+                deferred.reject(err);
+                return;
             }
-        );
+            deferred.resolve(data);
+        }
+    );
 
     return deferred.promise;
 
@@ -95,15 +95,15 @@ var mkdir = function(path){
     var deferred = q.defer();
 
     fs.mkdir(
-            path,
-            function(err){
-                if (err){
-                    deferred.reject(err);
-                    return;
-                }
-                deferred.resolve();
+        path,
+        function(err){
+            if (err){
+                deferred.reject(err);
+                return;
             }
-        );
+            deferred.resolve();
+        }
+    );
 
     return deferred.promise;
 
@@ -113,15 +113,15 @@ var readdir = function(path){
     var deferred = q.defer();
 
     fs.readdir(
-            path,
-            function(err, files){
-                if (err){
-                    deferred.reject(err);
-                    return;
-                }
-                deferred.resolve(files);
+        path,
+        function(err, files){
+            if (err){
+                deferred.reject(err);
+                return;
             }
-        );
+            deferred.resolve(files);
+        }
+    );
 
     return deferred.promise;
 };
@@ -131,17 +131,17 @@ var writeFile = function(file, data){
     var deferred = q.defer();
 
     fs.writeFile(
-            file,
-            data,
-            {encoding: 'utf8'},
-            function(err){
-                if (err){
-                    deferred.reject(err);
-                    return;
-                }
-                deferred.resolve();
+        file,
+        data,
+        {encoding: 'utf8'},
+        function(err){
+            if (err){
+                deferred.reject(err);
+                return;
             }
-        );
+            deferred.resolve();
+        }
+    );
 
     return deferred.promise;
 
@@ -171,17 +171,17 @@ var appendFile = function(file, data){
     var deferred = q.defer();
 
     fs.appendFile(
-            file,
-            data,
-            {encoding: 'utf8'},
-            function(err){
-                if (err){
-                    deferred.reject(err);
-                    return;
-                }
-                deferred.resolve();
+        file,
+        data,
+        {encoding: 'utf8'},
+        function(err){
+            if (err){
+                deferred.reject(err);
+                return;
             }
-        );
+            deferred.resolve();
+        }
+    );
 
     return deferred.promise;
 
@@ -191,16 +191,16 @@ var rename = function(oldPath, newPath){
     var deferred = q.defer();
 
     fs.rename(
-            oldPath,
-            newPath,
-            function(err){
-                if (err){
-                    deferred.reject(err);
-                    return;
-                }
-                deferred.resolve();
+        oldPath,
+        newPath,
+        function(err){
+            if (err){
+                deferred.reject(err);
+                return;
             }
-        );
+            deferred.resolve();
+        }
+    );
 
     return deferred.promise;
 };
