@@ -15,7 +15,6 @@ module.exports = function (grunt) {
         qexec(grunt.log, 'mkdir -p /ddns/key', 'create dir for key', 750, true)
         .then(function () {
             config.setKeyName(undefined);
-
             return qexec(grunt.log, 'rm -f /ddns/key/Kddns_update*', 'delete key if already exists');
         })
         .then(function () {
@@ -183,7 +182,6 @@ module.exports = function (grunt) {
             promises.push(createZone(nameServer, zones[i]));
         }
 
-        console.log(promises);
         return q.all(promises);
 
     };
