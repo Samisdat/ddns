@@ -34,6 +34,10 @@ describe('key', function() {
 
     it('key.createKeyDir', function(done) {
 
+        if(true === fs.existsSync('/ddns/key')){
+            rmdir('/ddns/key');    
+        }
+
         var dirExists = fs.existsSync('/ddns/key');
         expect(dirExists).to.be.false;
 
