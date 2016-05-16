@@ -152,6 +152,59 @@ describe('method server.readKey', function() {
 
     });
 
+    it('fail while there should be two files', function(done) {
+
+        fs.unlinkSync('/ddns/key/Kddns_update.+157+52345.key');
+
+        key.readKey()
+        .then(function(key){
+            done('should no succeed');
+        })
+        .fail(function(){
+            done();
+        });
+    });
+
+    it('fail while there should a private key', function(done) {
+
+        notFs.writeFileSync('/ddns/key/foo', 'just a second file', 'utf8');
+        fs.unlinkSync('/ddns/key/Kddns_update.+157+52345.private');
+
+        key.readKey()
+        .then(function(key){
+            done('should no succeed');
+        })
+        .fail(function(){
+            done();
+        });
+    });
+
+    it('fail while can find no key', function(done) {
+
+        notFs.writeFileSync('/ddns/key/Kddns_update.+157+52345.private', 'foobar', 'utf8');
+
+        key.readKey()
+        .then(function(key){
+            done('should no succeed');
+        })
+        .fail(function(){
+            done();
+        });
+    });
+
+    it('fail while can find no key dir', function(done) {
+
+        rmdir('/ddns/key/');
+
+        key.readKey()
+        .then(function(key){
+            done('should no succeed');
+        })
+        .fail(function(){
+            done();
+        });
+    });
+
     it('find key', function(done) {
         key.readKey()
         .then(function(key){
