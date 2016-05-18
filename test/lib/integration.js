@@ -16,9 +16,11 @@ describe('config ', function() {
         config.setNameServer('ns.example.org');
         config.addZone('dev.example.org');
 
-        server.firstSetup()
+        var nameServer = config.getNameServer();
+        var zones = config.getZones();
+
+        server.firstSetup(nameServer, zones)
         .then(function(){
-            console.log(config.getZones());
             done();
         });
 
@@ -34,9 +36,12 @@ describe('config ', function() {
 
     });
 
-    it.skip('can create client', function(done) {
+    it('can create client', function(done) {
 
         client.createClient()
+        .then(function(){
+            return client.tarClient();
+        })
         .then(function(){
             done();
         });

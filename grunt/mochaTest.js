@@ -14,6 +14,7 @@ var mocha = {
             'test/lib/qexec.js',
             'test/lib/qfs.js',
             'test/lib/rmdir.js',
+            'test/lib/key.js',
             'test/lib/server.js',
             'test/lib/integration.js'
         ]
@@ -46,6 +47,11 @@ var mocha = {
     client: {
         src: [
             'test/lib/client.js'
+        ]
+    },
+    key: {
+        src: [
+            'test/lib/key.js'
         ]
     },
     integration: {
