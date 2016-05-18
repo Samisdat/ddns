@@ -42,7 +42,7 @@ var mochaIstanbul = {
         src: [
             'test/lib/key.js'
         ]
-    }    
+    }
 };
 
 module.exports = mochaIstanbul;

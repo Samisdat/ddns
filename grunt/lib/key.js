@@ -9,7 +9,7 @@ var config = require('./config');
 module.exports = function (grunt) {
 
     var createKeyDir = function(){
-        if(true === fs.existsSync('/ddns/key')){
+        if (true === fs.existsSync('/ddns/key')){
             return q.resolve();
         }
         return qfs.mkdir('/ddns/key');
@@ -38,23 +38,23 @@ module.exports = function (grunt) {
 
     var create = function(){
 
-        var deferred = q.defer();        
+        var deferred = q.defer();
 
         config.setKeyName(undefined);
-        
+
         createKeyDir()
         .then(function(){
-            return wipeKeyDir();    
+            return wipeKeyDir();
         })
         .then(function(){
-            return createKeyFiles();    
+            return createKeyFiles();
         })
         .then(function(){
-            deferred.resolve();    
-        })
-                        
+            deferred.resolve();
+        });
+
         return deferred.promise;
-        
+
     };
 
     var readKey = function(){

@@ -21,7 +21,6 @@ describe('config ', function() {
 
         server.firstSetup(nameServer, zones)
         .then(function(){
-            console.log(config.getZones());
             done();
         });
 
@@ -37,9 +36,12 @@ describe('config ', function() {
 
     });
 
-    it.skip('can create client', function(done) {
+    it('can create client', function(done) {
 
         client.createClient()
+        .then(function(){
+            return client.tarClient();
+        })
         .then(function(){
             done();
         });

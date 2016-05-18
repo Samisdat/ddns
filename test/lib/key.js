@@ -7,7 +7,6 @@ dig @localhost dev.foo.org +short
 
 var expect = require('chai').expect;
 
-var q = require('q');
 var fs = require('fs');
 var qfs = require('../../grunt/lib/qfs');
 
@@ -19,7 +18,7 @@ grunt.log.ok = function(){};
 grunt.log.error = function(){};
 
 var key = require('../../grunt/lib/key')(grunt);
-var config = require('../../grunt/lib/config');
+
 var notFs = require('not-fs');
 
 describe('key', function() {
@@ -34,8 +33,8 @@ describe('key', function() {
 
     it('key.createKeyDir', function(done) {
 
-        if(true === fs.existsSync('/ddns/key')){
-            rmdir('/ddns/key');    
+        if (true === fs.existsSync('/ddns/key')){
+            rmdir('/ddns/key');
         }
 
         var dirExists = fs.existsSync('/ddns/key');
@@ -141,16 +140,16 @@ describe('method server.readKey', function() {
 
         notFs.mkdirSync('/ddns/key/');
 
-        var key = [];
-        key.push('Private-key-format: v1.3');
-        key.push('Algorithm: 157 (HMAC_MD5)');
-        key.push('Key: aaaaaaaaaaaaaaaaaaaaaa==');
-        key.push('Bits: AAA=');
-        key.push('Created: 20160413014957');
-        key.push('Publish: 20160413014957');
-        key.push('Activate: 20160413014957');
+        var keyMock = [];
+        keyMock.push('Private-key-format: v1.3');
+        keyMock.push('Algorithm: 157 (HMAC_MD5)');
+        keyMock.push('Key: aaaaaaaaaaaaaaaaaaaaaa==');
+        keyMock.push('Bits: AAA=');
+        keyMock.push('Created: 20160413014957');
+        keyMock.push('Publish: 20160413014957');
+        keyMock.push('Activate: 20160413014957');
 
-        notFs.writeFileSync('/ddns/key/Kddns_update.+157+52345.private', key.join('\n'), 'utf8');
+        notFs.writeFileSync('/ddns/key/Kddns_update.+157+52345.private', keyMock.join('\n'), 'utf8');
 
         notFs.writeFileSync('/ddns/key/Kddns_update.+157+52345.key', 'DDNS_UPDATE. IN KEY 0 3 157 aaaaaaaaaaaaaaaaaaaaaa==', 'utf8');
 
@@ -161,7 +160,7 @@ describe('method server.readKey', function() {
         fs.unlinkSync('/ddns/key/Kddns_update.+157+52345.key');
 
         key.readKey()
-        .then(function(key){
+        .then(function(){
             done('should no succeed');
         })
         .fail(function(){
@@ -175,7 +174,7 @@ describe('method server.readKey', function() {
         fs.unlinkSync('/ddns/key/Kddns_update.+157+52345.private');
 
         key.readKey()
-        .then(function(key){
+        .then(function(){
             done('should no succeed');
         })
         .fail(function(){
@@ -188,7 +187,7 @@ describe('method server.readKey', function() {
         notFs.writeFileSync('/ddns/key/Kddns_update.+157+52345.private', 'foobar', 'utf8');
 
         key.readKey()
-        .then(function(key){
+        .then(function(){
             done('should no succeed');
         })
         .fail(function(){
@@ -201,7 +200,7 @@ describe('method server.readKey', function() {
         rmdir('/ddns/key/');
 
         key.readKey()
-        .then(function(key){
+        .then(function(){
             done('should no succeed');
         })
         .fail(function(){
@@ -211,8 +210,8 @@ describe('method server.readKey', function() {
 
     it('find key', function(done) {
         key.readKey()
-        .then(function(key){
-            expect(key).to.be.equal('aaaaaaaaaaaaaaaaaaaaaa==');
+        .then(function(dnskey){
+            expect(dnskey).to.be.equal('aaaaaaaaaaaaaaaaaaaaaa==');
             done();
         })
         .fail(function(){

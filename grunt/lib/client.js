@@ -111,11 +111,11 @@ module.exports = function (grunt) {
 
         /*
         echo "client script created. copy from host by"
-        echo "docker cp CONTAINER:/ddns/client.tar HOSTPATH"        
+        echo "docker cp CONTAINER:/ddns/client.tar HOSTPATH"
         */
         return deferred.promise;
 
-    };    
+    };
 
     return {
         createUpdateMessageScript: createUpdateMessageScript,

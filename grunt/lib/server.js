@@ -51,11 +51,11 @@ module.exports = function (grunt) {
         var deferred = q.defer();
 
         key.readKey()
-        .then(function (key) {
+        .then(function (dnskey) {
 
             var keyTpl = fs.readFileSync(config.getTplPath() + 'key', {encoding: 'utf8'});
 
-            var keyPart = grunt.template.process(keyTpl, {'data': {'dnssec_key': key}});
+            var keyPart = grunt.template.process(keyTpl, {'data': {'dnssec_key': dnskey}});
 
             qfs.appendFile('/etc/bind/named.conf.local', keyPart)
             .then(function(){
@@ -119,7 +119,7 @@ module.exports = function (grunt) {
         var deferred = q.defer();
 
         var logConfig = fs.readFileSync(config.getTplPath() + 'logging', {encoding: 'utf8'});
-        console.log(logConfig);
+
         fs.appendFileSync('/etc/bind/named.conf.local', logConfig);
 
         if (false === fs.existsSync('/var/log/named/')){
@@ -153,45 +153,36 @@ module.exports = function (grunt) {
     };
 
     var firstSetup = function(nameServer, domains){
-        console.log('firstSetup', nameServer, domains);
+
         var deferred = q.defer();
-        console.log('createKey');
+
 
         key.create()
         .then(function(){
-            console.log('backupConfLocal');
             return backupConfLocal();
         })
         .then(function(){
-            console.log('removeConfLocal');
             return removeConfLocal();
         })
         .fail(function(){
             return q.resolve();
         })
         .then(function(){
-            console.log('createConfLocal');
             return createConfLocal();
         })
-
         .then(function(){
-            console.log('addKeyToConfLocal');
             return addKeyToConfLocal();
         })
         .then(function(){
-            console.log('createZones');
             return createZones(nameServer, domains);
         })
         .then(function(){
-            console.log('enableLogging');
             return enableLogging();
         })
         .then(function(){
-            console.log('chownBindDir');
             return chownBindDir();
         })
         .then(function(){
-            console.log('restartBind');
             return restartBind();
         })
         .then(function(){
