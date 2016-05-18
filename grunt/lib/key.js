@@ -9,6 +9,9 @@ var config = require('./config');
 module.exports = function (grunt) {
 
     var createKeyDir = function(){
+        if(true === fs.existsSync('/ddns/key')){
+            return q.resolve();
+        }
         return qfs.mkdir('/ddns/key');
     };
 
