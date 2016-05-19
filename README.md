@@ -7,17 +7,18 @@
 
 ## Build with all dependies
 
-docker run -d --name ddns samisdat/ddns
+docker run -d --name ddns-grunt -p 53:53/tcp -p 53:53/udp  samisdat/ddns
 
-docker exec -it ddns bash 
+docker exec -it ddns-grunt grunt server:init --ns ns.example.com --domain dev.example.com
 
-./setup.sh -k -z -c
-exit
+docker exec -it ddns-grunt grunt client:create
 
-docker cp CONTAINER:/ddns/client.tar HOSTPATH
-
-cd HOSTPATH
+docker cp ddns-grunt:/ddns/client.tar .
 
 tar xvf client.tar
 cd client
 ./do-nsupdate.sh 
+
+dig @localhost dev.example.org +short
+
+dig dev.example.org +short

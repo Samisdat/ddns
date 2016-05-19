@@ -1,3 +1,2 @@
 #!/bin/bash
 IP=$(ifconfig | grep -v 127.0.0.1 | grep 'inet[ addr\:]' | sed 's/addr://g' | sed 's/  / /g' | head -n 1 | sed 's/^ *//;s/$//'  | cut -d " " -f 2) 
-#echo $ID

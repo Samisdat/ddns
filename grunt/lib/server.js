@@ -5,6 +5,7 @@ var fs = require('fs');
 var qexec = require('./qexec');
 var qfs = require('./qfs');
 var config = require('./config');
+var client = require('./client');
 
 module.exports = function (grunt) {
 

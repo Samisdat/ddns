@@ -1,5 +1,5 @@
-#echo "server <%= nameServer %>"
-echo "server localhost"
+
+echo "server <%= nameServer %>"
 echo "zone <%= ddnsDomain %>"
 echo "update delete <%= ddnsDomain %>. A"
 echo "update add <%= ddnsDomain %> 30 IN A ${IP}"
