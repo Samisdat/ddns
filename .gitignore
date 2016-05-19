@@ -7,3 +7,4 @@ client/
 config.json
 key
 client.tar
+.DS_Store
